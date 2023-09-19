@@ -15,6 +15,7 @@ export default function App() {
 
   return (
     <>
+      <h1 className="text-3xl font-bold text-red-800">test </h1>
       <Button onPress={onOpen} color="primary">
         Open Modal
       </Button>
