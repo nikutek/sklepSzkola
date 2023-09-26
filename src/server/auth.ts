@@ -10,6 +10,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
+const bcrypt = require("bcrypt");
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -39,14 +40,13 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
+    jwt: ({ token, user }) => ({
+      ...token,
+      user,
     }),
   },
+
+  secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
@@ -62,16 +62,22 @@ export const authOptions: NextAuthOptions = {
 
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        console.log(credentials);
         const { email, password } = credentials as {
           email: string;
           password: string;
         };
 
-        if (email == "huj" && password == "1233") {
+        const user = await db.user.findUnique({
+          where: {
+            email: email,
+          },
+        });
+
+        console.log(user?.password);
+
+        if (bcrypt.compareSync(password, user?.password)) {
           // Any object returned will be saved in `user` property of the JWT
-          console.log(email, password);
-          return { id: "1", name: "Hujson", email: "huj@example.com" };
+          return user;
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
           return null;
@@ -93,7 +99,6 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
 };
 
 /**
