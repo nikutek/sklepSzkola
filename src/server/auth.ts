@@ -5,12 +5,11 @@ import {
   type DefaultSession,
   type NextAuthOptions,
 } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -73,9 +72,11 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
-        console.log(user?.password);
+        if (!user) {
+          throw "ten użytkownik nie istnieje";
+        }
 
-        if (bcrypt.compareSync(password, user?.password)) {
+        if (bcrypt.compareSync(password, user.password)) {
           // Any object returned will be saved in `user` property of the JWT
           return user;
         } else {

@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
-const bcrypt = require("bcrypt");
+import bcrypt, { hash } from "bcrypt";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method === "POST") {
-    const { email, password } = req.body;
+    const { email, password }: { email: string; password: string } = req.body;
 
     // check czy wpisany jest email i hasło
     if (!email || !password) {
@@ -44,11 +45,20 @@ export default async function handler(
       }
 
       // DODAWANIE UŻYTKOWNIKA DO BAZY
-      bcrypt.hash(password, 10).then(async (hash: string) => {
-        const user = await db.user.create({
-          data: { email, password: hash },
+      const saltRounds = 10;
+      bcrypt
+        .hash(password, saltRounds)
+        .then((hash) => {
+          console.log(hash);
+        })
+        .catch((err) => {
+          res.status(400).json({
+            message:
+              "Wystąpił błąd podczas tworzenia użytkownika, przepraszamy",
+          });
+          console.log(err);
         });
-      });
+
       res.status(200).json({ message: "Pomyślnie dodano użytkownika" });
       return;
     } catch {
