@@ -10,7 +10,7 @@ import {
 } from "components/ui/card";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, type SubmitHandler } from "react-hook-form";
 import type { FieldValues } from "react-hook-form/dist/types";
 
 //Typ wartości pól formularza
@@ -20,7 +20,7 @@ type FormValues = {
   repeatPassword: string;
 };
 
-export default function signin() {
+export default function Signin() {
   //Tryb rejestracji lub logowania
   const [mode, setMode] = useState("sign-in");
 
@@ -35,7 +35,7 @@ export default function signin() {
   //Reset formularza po wysłaniu
   useEffect(() => {
     reset();
-  }, [isSubmitSuccessful]);
+  }, [isSubmitSuccessful, reset]);
 
   //Zmiana trybu logowania lub rejestracji
   function changeMode() {
@@ -137,7 +137,11 @@ export default function signin() {
               )}
             </div>
             <div className="mt-12 flex flex-wrap justify-center">
-              <Button type="submit" className="sm:p-6 sm:text-xl">{`${
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="sm:p-6 sm:text-xl"
+              >{`${
                 mode === "sign-in" ? "Zaloguj się" : "Zarejestruj się"
               }`}</Button>
             </div>
