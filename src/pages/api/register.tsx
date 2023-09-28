@@ -16,6 +16,7 @@ export default async function handler(
       return;
     }
 
+    console.log(email);
     // sprawdzenie czy email jest poprawny
     const emailRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -46,19 +47,8 @@ export default async function handler(
 
       // DODAWANIE UŻYTKOWNIKA DO BAZY
       const saltRounds = 10;
-      bcrypt
-        .hash(password, saltRounds)
-        .then((hash) => {
-          console.log(hash);
-        })
-        .catch((err) => {
-          res.status(400).json({
-            message:
-              "Wystąpił błąd podczas tworzenia użytkownika, przepraszamy",
-          });
-          console.log(err);
-        });
-
+      const hash = bcrypt.hashSync(password, saltRounds);
+      await db.user.create({ data: { email, password: hash } });
       res.status(200).json({ message: "Pomyślnie dodano użytkownika" });
       return;
     } catch {
