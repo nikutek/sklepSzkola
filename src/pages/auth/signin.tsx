@@ -12,6 +12,7 @@ import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import type { FieldValues } from "react-hook-form/dist/types";
+import { signIn } from "next-auth/react";
 
 //Typ wartości pól formularza
 type FormValues = {
@@ -19,7 +20,9 @@ type FormValues = {
   password: string;
   repeatPassword: string;
 };
-
+interface ResponseData {
+  message: string;
+}
 export default function Signin() {
   //Tryb rejestracji lub logowania
   const [mode, setMode] = useState("sign-in");
@@ -46,12 +49,49 @@ export default function Signin() {
     }
     reset();
   }
-
-  const onSubmit: SubmitHandler<FormValues> = (data: FieldValues) => {
-    //TODO wysłanie danych na serwer
-    console.log(data);
+  const changePassword = () => {
+    console.log("Zmiana hasła");
   };
 
+  const onSubmit: SubmitHandler<FormValues> = async (data: FieldValues) => {
+    //TODO wysłanie danych na serwer
+    const userData = {
+      email: getValues("email"),
+      password: getValues("password"),
+    };
+    if (mode === "sign-up") {
+      try {
+        const response = await fetch("/api/register", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const res = await response.json();
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        alert(res.message);
+        setMode("sign-in");
+      } catch (error) {
+        alert(error);
+      }
+    } else if (mode === "sign-in") {
+      const response = await signIn("credentials", {
+        id: "1",
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      });
+      if (response?.ok) {
+        alert("Pomyślnie zalgowano");
+      } else {
+        alert(response?.error);
+      }
+      console.log(response);
+    }
+  };
   return (
     <div className="flex h-screen items-center justify-center bg-bg-grey ">
       <Card className="w-[350px] sm:w-[500px]">
@@ -61,7 +101,7 @@ export default function Signin() {
           }`}</CardTitle>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form method="POST" onSubmit={handleSubmit(onSubmit)}>
             <div className="grid w-full items-center gap-4">
               <div className="flex flex-col space-y-1.5">
                 <Label className="sm:text-xl" htmlFor="email">
@@ -158,6 +198,15 @@ export default function Signin() {
                 : "Masz już konto? Zaloguj się!"
             }`}
           </Button>
+          {mode === "sign-in" && (
+            <Button
+              onClick={changePassword}
+              className="mt-4 w-full sm:text-lg"
+              variant="link"
+            >
+              Zapomniałeś hasła? Kliknij tutaj!
+            </Button>
+          )}
         </CardContent>
       </Card>
     </div>
