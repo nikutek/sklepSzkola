@@ -61,7 +61,7 @@ export default async function handler(
       });
 
       const verificationToken = user.id;
-      const verificationUrl = `https://sklep-szkola.vercel.app/auth/verify?token=${verificationToken}`;
+      const verificationUrl = `https://sklep-szkola.vercel.app/auth/verify/${email}/${verificationToken}`;
 
       const mailOptions = {
         from: "szklep@zsp1.siedlce.pl",
