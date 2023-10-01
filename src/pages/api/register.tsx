@@ -2,6 +2,15 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
 import bcrypt, { hash } from "bcrypt";
+import nodemailer from "nodemailer";
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.NODEMAILER_USER,
+    pass: process.env.NODEMAILER_PASSWORD,
+  },
+});
 
 export default async function handler(
   req: NextApiRequest,
@@ -13,7 +22,6 @@ export default async function handler(
     // check czy wpisany jest email i hasło
     if (!email || !password) {
       res.status(400).json({ message: "Brak adresu email lub hasła" });
-      return;
     }
 
     console.log(email);
@@ -48,7 +56,28 @@ export default async function handler(
       // DODAWANIE UŻYTKOWNIKA DO BAZY
       const saltRounds = 10;
       const hash = bcrypt.hashSync(password, saltRounds);
-      await db.user.create({ data: { email, password: hash } });
+      const user = await db.user.create({
+        data: { email, password: hash },
+      });
+
+      const verificationToken = user.id;
+      const verificationUrl = `https://sklep-szkola.vercel.app/auth/verify?token=${verificationToken}`;
+
+      const mailOptions = {
+        from: "szklep@zsp1.siedlce.pl",
+        to: email,
+        subject: "!!!Gorące mamuśki w twojej okolicy!!!",
+        text: verificationUrl,
+      };
+
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log("Email sent: " + info.response);
+          res.status(200).json({ message: "Proszę zweryfikować email." });
+        }
+      });
       res.status(200).json({ message: "Pomyślnie dodano użytkownika" });
       return;
     } catch {
