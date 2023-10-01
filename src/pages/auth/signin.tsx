@@ -33,11 +33,6 @@ export default function Signin() {
     description: "",
     isError: false,
   });
-  // let popupData: {
-  //   title: string;
-  //   description: string;
-  //   isError: boolean;
-  // };
 
   const {
     register,
@@ -61,6 +56,11 @@ export default function Signin() {
     }
     reset();
   }
+  const closePopupOnTimeout = () => {
+    setTimeout(() => {
+      setShowPopup(false);
+    }, 5000);
+  };
   const closePopup = () => {
     setShowPopup(false);
   };
@@ -82,33 +82,36 @@ export default function Signin() {
           },
           body: JSON.stringify(userData),
         });
-
         const res = (await response.json()) as ResponseData;
-        setPopupData({
-          title: "Sukces",
-          description: "Pomyślnie utworzono użytkownika",
-          isError: false,
-        });
-        setShowPopup(true);
-        setMode("sign-in");
+        if (response.ok) {
+          setPopupData({
+            title: "Sukces",
+            description: "Pomyślnie utworzono użytkownika",
+            isError: false,
+          });
+          setShowPopup(true);
+          closePopupOnTimeout();
+          setMode("sign-in");
+        } else {
+          setPopupData({
+            title: "Błąd",
+            description: res.message,
+            isError: true,
+          });
+          setShowPopup(true);
+          closePopupOnTimeout();
+        }
       } catch (error: unknown) {
         console.log(error);
-        setPopupData({
-          title: "Błąd",
-          description: error instanceof Error ? error.message : "Unknown error",
-          isError: true,
-        });
-        setShowPopup(true);
       }
     } else if (mode === "sign-in") {
       const response = await signIn("credentials", {
-        id: "1",
         email: data.email,
         password: data.password,
         redirect: false,
       });
       if (response?.ok) {
-        alert("Pomyślnie zalgowano");
+        console.log("Zalogowano");
       } else {
         console.log(response);
 
@@ -118,6 +121,7 @@ export default function Signin() {
           isError: true,
         });
         setShowPopup(true);
+        closePopupOnTimeout();
       }
     }
   };

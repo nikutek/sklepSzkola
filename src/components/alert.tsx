@@ -15,7 +15,6 @@ interface AlertProps {
 }
 export const AlertPopup: FC<AlertProps> = (props) => {
   const { alertData, onClose, className } = props;
-  console.log(alertData);
   return (
     <Alert
       className={className}
