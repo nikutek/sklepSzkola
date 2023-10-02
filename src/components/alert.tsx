@@ -1,7 +1,7 @@
 import { AlertCircle } from "lucide-react";
 import type { FC } from "react";
 import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
-import { Button } from "@nextui-org/react";
+import { Button } from "components/ui/button";
 
 type alertData = {
   title: string;
@@ -25,9 +25,15 @@ export const AlertPopup: FC<AlertProps> = (props) => {
       <AlertDescription className="sm:text-lg">
         {alertData.description}
       </AlertDescription>
-      <Button onClick={onClose} className="sm:text-xxl sm:p-6 ">
-        Zamknij
-      </Button>
+      <div className="flex  flex-row items-center justify-end">
+        <Button
+          variant={alertData.isError ? "destructive" : "default"}
+          onClick={onClose}
+          className="sm:text-xxl sm:p-6 "
+        >
+          Zamknij
+        </Button>
+      </div>
     </Alert>
   );
 };
