@@ -25,19 +25,22 @@ export default async function handler(
         },
       });
     } catch (err) {
-      res.status(400).json({ message: "Błąd bazdy danych." });
+      res.status(400).json({ message: "Błąd bazdy danych.", verified: false });
       return;
     }
 
     if (!user) {
-      res.status(400).json({ message: "Nie ma takiego użykownika." });
+      res
+        .status(400)
+        .json({ message: "Nie ma takiego użykownika.", verified: false });
       return;
     }
 
     if (user.emailVerified) {
-      res
-        .status(400)
-        .json({ message: "Ten użytkownik jest już zweryfikowany." });
+      res.status(400).json({
+        message: "Ten użytkownik jest już zweryfikowany.",
+        verified: true,
+      });
       return;
     }
 
@@ -47,9 +50,11 @@ export default async function handler(
         where: { email: email },
         data: { emailVerified: true },
       });
-      res.status(200).json({ message: "Zweryfikowano użytkownika" });
+      res
+        .status(200)
+        .json({ message: "Zweryfikowano użytkownika", verified: true });
     } else {
-      res.status(400).json({ message: "Niepoprawny token" });
+      res.status(400).json({ message: "Niepoprawny token", verified: false });
     }
   }
 }

@@ -4,15 +4,14 @@ import type { GetServerSideProps, NextApiRequest, NextApiResponse } from "next";
 import { authOptions } from "~/server/auth";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-import { divider } from "@nextui-org/react";
+import { Card, CardContent, CardHeader } from "components/ui/card";
 
 interface responseObject {
   message: string;
+  verified: boolean;
 }
 
 const Verify = () => {
-  const [isVerified, setIsVerified] = useState(false);
-  const [verWasSent, setVerWasSent] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const router = useRouter();
@@ -21,7 +20,6 @@ const Verify = () => {
 
   useEffect(() => {
     const verifyHandler = async () => {
-      setVerWasSent(true);
       setIsLoading(true);
       const response = await fetch("/api/verify", {
         method: "POST",
@@ -31,34 +29,31 @@ const Verify = () => {
         body: JSON.stringify({ email, token }),
       });
       if (response.ok) {
-        setIsVerified(true);
+        await router.push("/auth/signin");
+        return;
       }
       const res = (await response.json()) as responseObject;
       setMessage(res.message);
       setIsLoading(false);
     };
     verifyHandler().catch(console.error);
-  }, [email, token]);
+  }, [email, token, router]);
   return (
-    <div>
-      <div>
-        <h1>Verify your account</h1>
-        {isVerified && (
+    <div className=" flex h-[90vh] items-center justify-center bg-bg-grey">
+      <Card className=" w-1/2">
+        <CardHeader>
+          <h1 className=" text-center text-2xl font-bold">
+            Zweryfikuj swoje konto
+          </h1>
+        </CardHeader>
+        <CardContent>
           <div>
-            <p>Zweryfikowano</p>
+            <p className="text-center text-lg">{`${
+              isLoading ? "Trwa weryfikacja" : message
+            }`}</p>
           </div>
-        )}
-        {verWasSent && !isVerified && !isLoading && (
-          <div>
-            <p>{`${message}`}</p>
-          </div>
-        )}
-        {verWasSent && !isVerified && !isLoading && (
-          <div>
-            <p>Trwa weryfikacja</p>
-          </div>
-        )}
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
