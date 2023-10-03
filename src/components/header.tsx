@@ -10,7 +10,7 @@ const Header = () => {
     await signOut();
   };
   return (
-    <header className="fixed left-0 top-0 flex h-24 w-full flex-row  items-center justify-between bg-black px-20 py-3 text-white sm:text-xl">
+    <header className="flex h-[10vh] w-full flex-row  items-center justify-between bg-black px-20 py-3 text-white sm:text-xl">
       <h1 className="text-5xl">Shop</h1>
       <div className="flex w-1/2">
         <nav className="flex w-3/4  flex-row items-center justify-center">
