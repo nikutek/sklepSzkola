@@ -30,7 +30,6 @@ const Verify = () => {
       });
       if (response.ok) {
         await router.push("/auth/signin");
-        return;
       }
       const res = (await response.json()) as responseObject;
       setMessage(res.message);

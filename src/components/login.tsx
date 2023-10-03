@@ -15,6 +15,10 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import type { FieldValues } from "react-hook-form/dist/types";
 import { signIn } from "next-auth/react";
 import { AlertPopup } from "~/components/alert";
+import {
+  changePasswordHandler,
+  type changePasswordResponseObject,
+} from "utils/changePassword";
 
 //Typ wartości pól formularza
 type FormValues = {
@@ -65,8 +69,25 @@ export default function Login() {
   const closePopup = () => {
     setShowPopup(false);
   };
-  const changePassword = () => {
-    console.log("Zmiana hasła");
+  const changePassword = async () => {
+    if (getValues("email")) {
+      const { message, isError } = (await changePasswordHandler(
+        getValues("email"),
+      )) as changePasswordResponseObject;
+      setPopupData({
+        title: isError ? "Błąd" : "Sukces",
+        description: message,
+        isError: isError,
+      });
+      setShowPopup(true);
+    } else {
+      setPopupData({
+        title: "Powiadomienie",
+        description: "Uzupełnij pole email aby zmienić hasło",
+        isError: true,
+      });
+      setShowPopup(true);
+    }
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data: FieldValues) => {
