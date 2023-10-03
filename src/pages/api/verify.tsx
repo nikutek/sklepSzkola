@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
 
 export default async function handler(
