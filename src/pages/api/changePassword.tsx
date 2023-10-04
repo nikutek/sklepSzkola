@@ -118,7 +118,7 @@ export default async function handler(
     const saltRounds = 10;
     const hash = bcrypt.hashSync(newPassword, saltRounds);
     console.log(hash);
-    const updatedUser = db.user.update({
+    const updatedUser = await db.user.update({
       where: { id: token },
       data: { password: hash },
     });

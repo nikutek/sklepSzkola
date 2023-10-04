@@ -53,16 +53,20 @@ const ChangePassword = () => {
       },
       body: JSON.stringify(changePasswordData),
     });
-    // if (response.ok) {
-    //   await router.push("/auth/signin");
-    // }
+
     const res = (await response.json()) as changePasswordResponseObject;
     setPopupData({
       title: res.isError ? "Błąd" : "Sukces",
-      description: res.message,
+      description: res.isError
+        ? res.message
+        : res.message +
+          ". Za chwilę zostaniesz przekierowany na stronę logowania",
       isError: res.isError,
     });
     setShowPopup(true);
+    setTimeout(() => {
+      void router.push("/auth/signin");
+    }, 5000);
   };
 
   return (
