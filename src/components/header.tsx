@@ -3,6 +3,10 @@ import Link from "next/link";
 import React, { Fragment, useState } from "react";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faRectangleXmark } from "@fortawesome/free-regular-svg-icons";
+import { faXing } from "@fortawesome/free-brands-svg-icons";
 
 const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -18,9 +22,13 @@ const Header = () => {
         }}
         className={`fixed ${
           menuVisible ? "left-[260px] " : "left-[10px] "
-        } top-[10px] w-[20px] transition-all`}
+        } top-[10px] w-[20px] transition-all md:hidden`}
       >
-        X
+        {menuVisible ? (
+          <FontAwesomeIcon className="text-4xl" icon={faRectangleXmark} />
+        ) : (
+          <FontAwesomeIcon className="text-4xl" icon={faBars} />
+        )}
       </div>
       <header
         className={` ${
