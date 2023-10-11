@@ -6,7 +6,6 @@ import { signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faRectangleXmark } from "@fortawesome/free-regular-svg-icons";
-import { faXing } from "@fortawesome/free-brands-svg-icons";
 
 const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -52,7 +51,7 @@ const Header = () => {
                 <Link href={"#"}>Menu 2 </Link>
               </li>
               <li className=" my-4 rounded-lg border-b-4 bg-slate-100 p-2  text-center text-xl text-black transition-all hover:border-4 hover:bg-black hover:text-white md:mx-6 md:rounded-none md:border-0 md:bg-black md:text-white md:hover:border-x-0 md:hover:border-b-2 md:hover:border-t-0">
-                <Link href={"#"}>Menu 3</Link>
+                <Link href={"/"}>Menu 3</Link>
               </li>
             </ul>
           </nav>
@@ -66,12 +65,8 @@ const Header = () => {
             </Button>
           )}
           {status === "unauthenticated" && (
-            <Button
-              onClick={logoutHandler}
-              className="md:p-6"
-              variant="secondary"
-            >
-              <Link href={"/auth/signin"}>Zaloguj się</Link>
+            <Button className="md:p-6" variant="secondary">
+              <Link href={"auth/signin"}>Zaloguj się</Link>
             </Button>
           )}
         </div>
