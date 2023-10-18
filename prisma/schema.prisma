@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -54,6 +53,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    orders        Order[]
 }
 
 model VerificationToken {
@@ -63,3 +63,41 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+model Category {
+  category_id   Int      @id @default(autoincrement())
+  name         String
+  products     Product[]
+}
+
+model Product {
+  product_id   Int      @id @default(autoincrement())
+  name         String
+  price        Float
+  quantity     Float
+  description  String
+  isDigital    Boolean
+  categories   Category[]
+  orders       Order[]
+  favorites    Favorites[]
+}
+
+model Favorites {
+  favorites_id Int @id @default(autoincrement())
+  product Product[]
+  product_id Int
+}
+
+model Order {
+  order_id     Int      @id @default(autoincrement())
+  products     Product[]
+  user         String
+  user_id      User @relation(fields: [user], references: [id])
+  order_date   DateTime
+  shipped_date DateTime?
+  address      String
+  postal       String
+  post         String
+}
+
+
