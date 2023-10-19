@@ -51,12 +51,11 @@ export default async function handler(
         })  
 
         res.status(200).json(user)
-        return user;
+        return;
     }
 
     if (req.method ==="DELETE") {
       const {product_id} = req.body as productType;
-      console.log(product_id);
       const user = await db.product.delete({
         where:{
           product_id
