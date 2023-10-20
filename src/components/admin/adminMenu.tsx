@@ -35,10 +35,10 @@ const AdminMenu = (props: { activeSite: string }) => {
           </li>
           <li
             className={`${
-              props.activeSite === "/categories" && "bg-black text-white"
+              props.activeSite === "/categories" && "bg-black text-white "
             }pointer  my-2 w-[40%] border-2 border-black px-3 py-3 text-center text-sm md:mx-0  md:w-[90%] md:border-l-2 md:border-t-2 md:px-5  md:text-lg`}
           >
-            <Link className="block w-full" href={`/admin/categories`}>
+            <Link className={`block w-full`} href={`/admin/categories`}>
               Kategorie
             </Link>
           </li>

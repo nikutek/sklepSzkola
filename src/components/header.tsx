@@ -21,7 +21,7 @@ const Header = () => {
         }}
         className={`fixed ${
           menuVisible ? "left-[260px] " : "left-[10px] "
-        } top-[10px] w-[20px] transition-all md:hidden`}
+        } top-[10px] w-[20px]  transition-all md:hidden`}
       >
         {menuVisible ? (
           <FontAwesomeIcon className="text-4xl" icon={faRectangleXmark} />

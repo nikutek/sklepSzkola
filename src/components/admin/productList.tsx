@@ -69,22 +69,27 @@ const ProductListItem = (props: {
   image: string;
 }) => {
   return (
-    <li className="border-grey my-3 flex items-center justify-between  border-b-2  p-2 text-lg">
-      <div className="flex w-[70%] justify-around">
-        <Image width={100} height={100} alt="" src={props.image} />
+    <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
+      <div className="flex w-full  items-center justify-around md:w-[70%] ">
+        <div className="relative h-[70px] w-[70px] md:h-[100px] md:w-[100px]">
+          <Image fill={true} alt="" src={props.image} />
+        </div>
+
         <div className="flex items-center">
           <p className="font-bold">{`${props.name}`}</p>
         </div>
-        <div className="flex w-1/3 items-center justify-between">
-          <p> {`Price: ${props.price}zł`}</p>
+        <div className=" flex flex-col flex-wrap items-center justify-center text-base ">
+          <p className=""> {`Price: ${props.price}zł`}</p>
           <p> {`In magazine: ${props.quantity}`}</p>
         </div>
       </div>
-      <div>
-        <Button className="mx-4 bg-blue-400 p-6 hover:bg-blue-500">
+      <div className=" my-2 flex w-full justify-around md:w-1/4">
+        <Button className=" bg-blue-400 p-4 text-sm hover:bg-blue-500 md:text-lg">
           Edytuj
         </Button>
-        <Button className="mx-4 bg-red-700 p-6 hover:bg-red-800">Usuń</Button>
+        <Button className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg">
+          Usuń
+        </Button>
       </div>
     </li>
   );
@@ -92,11 +97,11 @@ const ProductListItem = (props: {
 
 const ProductList = () => {
   return (
-    <Card className="h-[80vh] max-h-[80vh] w-[85%] overflow-hidden ">
+    <Card className="h-[80vh] max-h-[80vh] w-full overflow-hidden md:w-[95%] ">
       <CardHeader>
         <h1 className="text-center text-3xl font-bold">Products</h1>
       </CardHeader>
-      <CardContent className=" my-6 max-h-[85%] overflow-hidden overflow-y-scroll">
+      <CardContent className="my-2 max-h-[85%] w-full overflow-hidden overflow-y-scroll p-2 md:my-6">
         <ul className="flex flex-col ">
           {DUMMY_PRODUCTS.map((product) => (
             <ProductListItem
