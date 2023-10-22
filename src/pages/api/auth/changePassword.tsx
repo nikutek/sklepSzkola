@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 import nodemailer from "nodemailer";
 
 interface changePasswordData {
@@ -116,8 +116,9 @@ export default async function handler(
     }
 
     const saltRounds = 10;
-    const hash = bcrypt.hashSync(newPassword, saltRounds);
+    const hash = bcryptjs.hashSync(newPassword, saltRounds);
     console.log(hash);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const updatedUser = await db.user.update({
       where: { id: token },
       data: { password: hash },

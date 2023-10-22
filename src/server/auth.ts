@@ -10,7 +10,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 import { env } from "~/env.mjs";
 import { db } from "~/server/db";
-import bcrypt from "bcrypt";
+import bcryptjs from "bcryptjs";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -77,7 +77,7 @@ export const authOptions: NextAuthOptions = {
           throw "ten użytkownik nie istnieje";
         }
 
-        if (bcrypt.compareSync(password, user.password)) {
+        if (bcryptjs.compareSync(password, user.password)) {
           // Any object returned will be saved in `user` property of the JWT
           return user;
         } else {

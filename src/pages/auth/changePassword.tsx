@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React from "react";
 import { getServerSession } from "next-auth";
 import type { GetServerSideProps, NextApiRequest, NextApiResponse } from "next";

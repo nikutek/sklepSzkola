@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
-import bcrypt, { hash } from "bcrypt";
+import bcryptjs, { hash } from "bcryptjs";
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -56,7 +56,7 @@ export default async function handler(
 
       // DODAWANIE UŻYTKOWNIKA DO BAZY
       const saltRounds = 10;
-      const hash = bcrypt.hashSync(password, saltRounds);
+      const hash = bcryptjs.hashSync(password, saltRounds);
       const user = await db.user.create({
         data: { email, password: hash },
       });
