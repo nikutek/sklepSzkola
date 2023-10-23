@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader } from "components/ui/card";
 import React from "react";
 import Image from "next/image";
 import { Button } from "components/ui/button";
+import Link from "next/link";
 const DUMMY_PRODUCTS = [
   {
     id: "p1",
@@ -100,6 +101,11 @@ const ProductList = () => {
     <Card className="h-[80vh] max-h-[80vh] w-full overflow-hidden md:w-[95%] ">
       <CardHeader>
         <h1 className="text-center text-3xl font-bold">Products</h1>
+        <div className="">
+          <Button className=" px-6 py-6 hover:bg-orange-500">
+            <Link href={"/admin/add/product"}>Dodaj produkt</Link>
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="my-2 max-h-[85%] w-full overflow-hidden overflow-y-scroll p-2 md:my-6">
         <ul className="flex flex-col ">
