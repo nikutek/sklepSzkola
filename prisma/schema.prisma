@@ -92,7 +92,6 @@ model Favorites {
 }
 
 model Order {
-<<<<<<< HEAD
     order_id     Int      @id @default(autoincrement())
     products     Product[]
     user         String
@@ -104,17 +103,6 @@ model Order {
     post         String
 
     @@index([user])
-=======
-  order_id     Int      @id @default(autoincrement())
-  products     Product[]
-  user         String
-  user_id      User @relation(fields: [user], references: [id])
-  order_date   DateTime
-  shipped_date DateTime?
-  address      String
-  postal       String
-  post         String
->>>>>>> 99832191fdfacd8db75470c27e5182dd6e2e1848
 }
 
 

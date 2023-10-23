@@ -21,7 +21,7 @@ const Verify = () => {
   useEffect(() => {
     const verifyHandler = async () => {
       setIsLoading(true);
-      const response = await fetch("/api/verify", {
+      const response = await fetch("/api/auth/verify", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
