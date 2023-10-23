@@ -3,7 +3,7 @@ export interface changePasswordResponseObject {
   isError: boolean;
 }
 export const changePasswordHandler = async (email: string) => {
-  const response = await fetch("/api/changePassword", {
+  const response = await fetch("/api/auth/changePassword", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

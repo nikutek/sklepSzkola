@@ -45,7 +45,7 @@ export default async function handler(
       },
     });
 
-    const passwordChangeUrl = `https://sklep-szkola.vercel.app/auth/changePassword/?email=${email}&token=${user.id}`;
+    const passwordChangeUrl = `https://sklepszkola-production.up.railway.app/auth/changePassword/?email=${email}&token=${user.id}`;
 
     const mailOptions = {
       from: "szklep@zsp1.siedlce.pl",

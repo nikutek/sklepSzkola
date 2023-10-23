@@ -47,7 +47,7 @@ const ChangePassword = () => {
       newPassword: getValues("password"),
     };
     console.log(changePasswordData);
-    const response = await fetch("/api/changePassword", {
+    const response = await fetch("/api/auth/changePassword", {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
