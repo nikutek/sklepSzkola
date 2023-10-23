@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 version: '3.9'
 services:
   app:
@@ -19,3 +20,26 @@ services:
       DISCORD_CLIENT_SECRET: ""
       NODEMAILER_USER: "u19_nikodemgolawski@zsp1.siedlce.pl"
       NODEMAILER_PASSWORD: "nrvp doep bxkp fhhl"
+=======
+version: "3.9"
+services:
+  app:
+    platform: "linux/amd64"
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_CLIENTVAR: "clientvar"
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    image: t3-app
+    environment:
+      - DATABASE_URL="mysql://01fyh7sgjc3zsn05xlaa:pscale_pw_1Ubpu9XUtderVyNzvDDCMQGjSQBrGWFXaJeVV5nsOUP@aws.connect.psdb.cloud/sklepszkola?sslaccept=strict"
+      - NEXTAUTH_SECRET="huj"
+      - NEXTAUTH_URL="http://localhost:3000/"
+      - DISCORD_CLIENT_ID=""
+      - DISCORD_CLIENT_SECRET=""
+      - NODEMAILER_USER="u19_nikodemgolawski@zsp1.siedlce.pl"
+      - NODEMAILER_PASSWORD="nrvp doep bxkp fhhl"
+>>>>>>> 99832191fdfacd8db75470c27e5182dd6e2e1848

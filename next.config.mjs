@@ -8,6 +8,11 @@ await import("./src/env.mjs");
 const config = {
   reactStrictMode: true,
   output: "standalone",
+<<<<<<< HEAD
+=======
+  webpack5: false,
+  
+>>>>>>> 99832191fdfacd8db75470c27e5182dd6e2e1848
 
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.
