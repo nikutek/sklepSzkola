@@ -112,15 +112,15 @@ model Image {
 model Order {
     order_id     Int      @id @default(autoincrement())
     products     Product[]
-    user         String
-    user_id      User     @relation(fields: [user], references: [id])
+    user_id         String
+    user      User     @relation(fields: [user_id], references: [id])
     order_date   DateTime
     shipped_date DateTime?
     address      String
     postal       String
     post         String
 
-    @@index([user])
+    @@index([user_id])
 }
 
 
