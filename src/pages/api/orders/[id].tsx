@@ -38,7 +38,8 @@ export default async function handler(
   }
 
   if (req.method === "PATCH") {
-    const { order_id, user_id, shipped_date, address, postal, post, products } =
+    const order_id: number = parseInt(req.query.id as string);
+    const { user_id, shipped_date, address, postal, post, products } =
       req.body as orderType;
     if (user_id && products) {
       const order = await db.order.update({
@@ -90,6 +91,7 @@ export default async function handler(
           post: post ?? undefined,
           products:
             {
+              set: [],
               connect: products.map((product) => ({
                 product_id: product.product_id ?? undefined,
               })),
