@@ -57,6 +57,18 @@ model User {
     accounts      Account[]
     sessions      Session[]
     orders        Order[]
+    favoriteProducts favoriteProducts[]
+}
+
+model favoriteProducts {
+  id Int @id @default(autoincrement())
+  user_id String
+  user User @relation(fields: [user_id], references: [id])
+  product_id Int
+  product Product @relation(fields: [product_id], references: [product_id])
+
+  @@index([user_id])
+  @@index([product_id])
 }
 
 model VerificationToken {
@@ -80,16 +92,22 @@ model Product {
   quantity     Float
   description  String
   isDigital    Boolean
+  mainImage    String
+  images       Image[]
   categories   Category[]
   orders       Order[]
-  favorites    Favorites[]
+  favorites    favoriteProducts[]
 }
 
-model Favorites {
-  favorites_id Int @id @default(autoincrement())
-  product Product[]
+model Image {
+  image_id Int @id @default(autoincrement())
+  source String
   product_id Int
+  product Product @relation(fields: [product_id], references: [product_id])
+
+  @@index([product_id])
 }
+
 
 model Order {
     order_id     Int      @id @default(autoincrement())
