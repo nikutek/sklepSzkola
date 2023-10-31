@@ -73,6 +73,10 @@ export const authOptions: NextAuthOptions = {
           },
         });
 
+        if (!user?.emailVerified){
+          throw "Konto nie jest zweryfikowane. Sprawdź pocztę."
+        }
+
         if (!user) {
           throw "ten użytkownik nie istnieje";
         }
