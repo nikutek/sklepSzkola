@@ -6,7 +6,7 @@ import { Label } from "components/ui/label";
 import { useForm } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 
-export type addProductType = {
+export type addCategoryType = {
   name: string;
 };
 
@@ -18,7 +18,7 @@ const AddCategoryForm = () => {
     getValues,
     reset,
     control,
-  } = useForm<addProductType>();
+  } = useForm<addCategoryType>();
 
   const submitHandler = (data: FieldValues) => {
     console.log(data);
