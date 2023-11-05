@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "components/ui/button";
 import { Card, CardContent, CardHeader } from "components/ui/card";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
+import { useToast } from "components/ui/use-toast";
 import { useForm } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 
@@ -14,14 +15,33 @@ const AddCategoryForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
-    getValues,
+    formState: { errors, isSubmitting },
     reset,
-    control,
   } = useForm<addCategoryType>();
 
-  const submitHandler = (data: FieldValues) => {
-    console.log(data);
+  const { toast } = useToast();
+
+  const submitHandler = async (data: FieldValues) => {
+    const response = await fetch("/api/categories", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      toast({
+        variant: "destructive",
+        title: "Błąd",
+        description: "Coś poszło nie tak",
+      });
+      return;
+    }
+    toast({
+      title: "Sukces",
+      description: "Pomyślnie dodano kategorie",
+    });
+    reset();
   };
 
   return (

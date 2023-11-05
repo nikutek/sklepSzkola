@@ -4,6 +4,7 @@ import { type AppType } from "next/app";
 import Header from "~/components/header";
 import { QueryClient, QueryClientProvider } from "react-query";
 import "~/styles/globals.css";
+import { Toaster } from "components/ui/toaster";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -16,6 +17,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <QueryClientProvider client={queryClient}>
         <Header />
         <Component {...pageProps} />
+        <Toaster />
       </QueryClientProvider>
     </SessionProvider>
   );
