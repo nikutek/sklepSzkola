@@ -1,36 +1,10 @@
 import { Card, CardContent, CardHeader } from "components/ui/card";
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import type { categoryType } from "~/pages/api/categories";
 import { Button } from "components/ui/button";
 import Link from "next/link";
 
-const DUMMY_CATEGORIES = [
-  {
-    id: "k1",
-    name: "Ubrania",
-  },
-  {
-    id: "k2",
-    name: "Buty",
-  },
-  {
-    id: "k3",
-    name: "Czapki",
-  },
-  {
-    id: "k4",
-    name: "Akcesoria",
-  },
-  {
-    id: "k5",
-    name: "XDFD",
-  },
-  {
-    id: "k6",
-    name: "Plyty",
-  },
-];
-const CategoriesListItem = (props: { key: string; name: string }) => {
+const CategoriesListItem = (props: { key: number; name: string }) => {
   return (
     <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
       <div className="flex w-full  items-center justify-around md:w-[70%] ">
@@ -50,6 +24,23 @@ const CategoriesListItem = (props: { key: string; name: string }) => {
   );
 };
 const CategoriesList = () => {
+  const [categories, setCategories] = useState<categoryType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("api/categories");
+        const data = (await response.json()) as categoryType[];
+        setCategories(data);
+        setIsLoading(false);
+      } catch (err) {}
+    };
+    fetchCategories().catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
   return (
     <Card className="h-[80vh] max-h-[80vh] w-full overflow-hidden md:w-[70%] ">
       <CardHeader>
@@ -61,11 +52,18 @@ const CategoriesList = () => {
         </div>
       </CardHeader>
       <CardContent className="my-2 max-h-[85%] w-[full] overflow-hidden overflow-y-scroll p-2 md:my-6">
-        <ul className="flex flex-col ">
-          {DUMMY_CATEGORIES.map((category) => (
-            <CategoriesListItem key={category.id} name={category.name} />
-          ))}
-        </ul>
+        {!isLoading && (
+          <ul className="flex flex-col ">
+            {categories.map((category: categoryType) => (
+              <CategoriesListItem
+                key={category.category_id}
+                name={category.name}
+              />
+            ))}
+          </ul>
+        )}
+
+        {isLoading && <p className=" text-center text-xl">Loading...</p>}
       </CardContent>
     </Card>
   );
