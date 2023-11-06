@@ -25,7 +25,17 @@ const CategoriesListItem = (props: {
       </div>
       <div className=" my-2 flex w-full justify-around md:w-1/4">
         <Button className=" bg-blue-400 p-4 text-sm hover:bg-blue-500 md:text-lg">
-          Edytuj
+          <Link
+            href={{
+              pathname: "/admin/edit/category",
+              query: {
+                name: props.name,
+                id: props.id,
+              },
+            }}
+          >
+            Edytuj
+          </Link>
         </Button>
         <Button
           onClick={props.onDelete.bind(null, category)}
