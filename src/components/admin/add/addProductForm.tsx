@@ -23,7 +23,37 @@ export type addProductType = {
   quantity: number;
   isDigital: string;
 };
+interface FileToBase64Result {
+  base64Data: string;
+  fileInfo: {
+    name: string;
+    type: string;
+    size: number;
+  };
+}
 
+const fileToBase64 = (file: File): Promise<FileToBase64Result> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      if (event.target) {
+        const base64Data = event.target.result as string;
+        const fileInfo = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+        };
+
+        resolve({ base64Data, fileInfo });
+      } else {
+        reject(new Error("Error reading file as base64."));
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
+};
 const AddProductForm = () => {
   const {
     register,
@@ -34,11 +64,31 @@ const AddProductForm = () => {
     control,
   } = useForm<addProductType>();
 
-  const submitHandler = (data: FieldValues) => {
-    console.log(data);
-    console.log(getValues("isDigital"));
-  };
+  const submitHandler = async (data: FieldValues) => {
+    const frontImgFiles: FileList = data.frontImage as FileList;
+    const imagesFiles: FileList = data.images as FileList;
+    const imagesFilesArr = Array.from(imagesFiles);
+    if (frontImgFiles.length === 0 || imagesFilesArr.length === 0) {
+      return;
+    }
+    const file = frontImgFiles[0]!;
+    imagesFilesArr.unshift(file);
 
+    const baseFiles = [];
+
+    for (const file of imagesFilesArr) {
+      try {
+        const { base64Data, fileInfo } = await fileToBase64(file);
+        console.log("Base64 Data:", base64Data);
+        console.log("File Info:", fileInfo);
+        const baseFile = { base64Data, fileInfo };
+        baseFiles.push(baseFile);
+      } catch (error) {
+        console.error("Error converting file to base64:", error);
+      }
+    }
+    console.log(baseFiles);
+  };
   return (
     <Card className="w-1/2">
       <CardHeader>
