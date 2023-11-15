@@ -54,6 +54,8 @@ model User {
     emailVerified Boolean @default(false)
     verificationToken String @default("token")
     image         String?
+    isWorker      Boolean @default(false)
+    isAdmin       Boolean @default(false)
     accounts      Account[]
     sessions      Session[]
     orders        Order[]
