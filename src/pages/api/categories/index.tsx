@@ -2,7 +2,7 @@
 import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
 
-interface categoryType {
+export interface categoryType {
   category_id: number;
   name: string;
 }
