@@ -94,7 +94,7 @@ model Product {
   quantity     Float
   description  String
   isDigital    Boolean
-  mainImage    String
+  mainImage    String?
   images       Image[]
   categories   Category[]
   orders       Order[]
@@ -104,8 +104,8 @@ model Product {
 model Image {
   image_id Int @id @default(autoincrement())
   source String
-  product_id Int
-  product Product @relation(fields: [product_id], references: [product_id])
+  product_id Int? 
+  product Product? @relation(fields: [product_id], references: [product_id])
 
   @@index([product_id])
 }

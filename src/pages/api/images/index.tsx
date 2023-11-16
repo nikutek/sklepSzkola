@@ -43,7 +43,7 @@ export default async function handler(
   if (req.method == "POST") {
     const { base64Image, fileName, productId } = req.body as imageType;
 
-    if (!(base64Image && fileName && productId)) {
+    if (!(base64Image && fileName)) {
       res.status(200).json("Brak wszystkich danych");
     }
 

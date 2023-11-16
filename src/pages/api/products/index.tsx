@@ -10,6 +10,7 @@ export interface productType {
   description: string;
   isDigital: boolean;
   mainImage: string;
+  images: number[];
 }
 
 export default async function handler(
@@ -22,7 +23,7 @@ export default async function handler(
     return;
   }
   if (req.method === "POST") {
-    const { name, price, quantity, description, isDigital, mainImage } =
+    const { name, price, quantity, description, isDigital, mainImage, images } =
       req.body as productType;
     const product = await db.product.create({
       data: {
@@ -32,7 +33,14 @@ export default async function handler(
         description,
         isDigital,
         mainImage,
+        images:
+          {
+            connect: images.map((id) => ({
+              image_id: id ?? undefined,
+            })),
+          } ?? undefined,
       },
+      include: { images: true },
     });
     res.status(200).json(product);
     return;
