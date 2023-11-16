@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
+import { imageType } from "../images";
 
 export interface productType {
   product_id: number;
@@ -10,7 +11,7 @@ export interface productType {
   description: string;
   isDigital: boolean;
   mainImage: string;
-  images: number[];
+  imagesBase64: string[];
 }
 
 export default async function handler(
@@ -23,8 +24,39 @@ export default async function handler(
     return;
   }
   if (req.method === "POST") {
-    const { name, price, quantity, description, isDigital, mainImage, images } =
-      req.body as productType;
+    const {
+      name,
+      price,
+      quantity,
+      description,
+      isDigital,
+      mainImage,
+      imagesBase64,
+    } = req.body as productType;
+    if (!imagesBase64) {
+      res.status(400).json("Brak zdjęć");
+      return;
+    }
+    interface imageKitType {
+      image_id: number;
+      source: string;
+      product_id: number;
+    }
+
+    const images: imageKitType[] = [];
+    for (const img of imagesBase64) {
+      const response = await fetch("http://localhost:3000/api/images", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ base64Image: img }),
+      });
+      const data = (await response.json()) as imageKitType;
+      images.push(data);
+      console.log(images);
+    }
+
     const product = await db.product.create({
       data: {
         name,
@@ -35,9 +67,9 @@ export default async function handler(
         mainImage,
         images:
           {
-            connect: images.map((id) => ({
-              image_id: id ?? undefined,
-            })),
+            create: images.map((img) => {
+              return { source: img.source };
+            }),
           } ?? undefined,
       },
       include: { images: true },

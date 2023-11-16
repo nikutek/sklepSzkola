@@ -8,7 +8,7 @@ const imagekit = new ImageKit({
   privateKey: "private_3qm284t9d5WvtWdhHl5PI7prWtM=",
 });
 
-interface imageType {
+export interface imageType {
   base64Image: string;
   fileName: string;
   tags: string[];
@@ -41,7 +41,10 @@ export default async function handler(
   }
 
   if (req.method == "POST") {
-    const { base64Image, fileName, productId } = req.body as imageType;
+    console.log("images");
+    const { base64Image } = req.body as imageType;
+    const fileName = (Math.random() + 1).toString(36).substring(7);
+    console.log(fileName, base64Image);
 
     if (!(base64Image && fileName)) {
       res.status(200).json("Brak wszystkich danych");
@@ -80,7 +83,7 @@ export default async function handler(
     try {
       const result = (await uploadImage(base64Image, fileName)) as resultType;
       const image = await db.image.create({
-        data: { source: result.url, product_id: productId },
+        data: { source: result.url },
         include: { product: true },
       });
       console.log(result);
