@@ -6,16 +6,54 @@ import { Label } from "components/ui/label";
 import { useForm, Controller } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
 import { Textarea } from "components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
 
-type FormValues = {
+export type addProductType = {
   name: string;
   description: string;
   frontImage: File;
   images: File[];
   price: number;
   quantity: number;
+  isDigital: string;
 };
+interface FileToBase64Result {
+  base64Data: string;
+  fileInfo: {
+    name: string;
+    type: string;
+    size: number;
+  };
+}
 
+const fileToBase64 = (file: File): Promise<FileToBase64Result> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = (event) => {
+      if (event.target) {
+        const base64Data = event.target.result as string;
+        const fileInfo = {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+        };
+
+        resolve({ base64Data, fileInfo });
+      } else {
+        reject(new Error("Error reading file as base64."));
+      }
+    };
+
+    reader.readAsDataURL(file);
+  });
+};
 const AddProductForm = () => {
   const {
     register,
@@ -24,12 +62,33 @@ const AddProductForm = () => {
     getValues,
     reset,
     control,
-  } = useForm<FormValues>();
+  } = useForm<addProductType>();
 
-  const submitHandler = (data: FieldValues) => {
-    console.log(data);
+  const submitHandler = async (data: FieldValues) => {
+    const frontImgFiles: FileList = data.frontImage as FileList;
+    const imagesFiles: FileList = data.images as FileList;
+    const imagesFilesArr = Array.from(imagesFiles);
+    if (frontImgFiles.length === 0 || imagesFilesArr.length === 0) {
+      return;
+    }
+    const file = frontImgFiles[0]!;
+    imagesFilesArr.unshift(file);
+
+    const baseFiles = [];
+
+    for (const file of imagesFilesArr) {
+      try {
+        const { base64Data, fileInfo } = await fileToBase64(file);
+        console.log("Base64 Data:", base64Data);
+        console.log("File Info:", fileInfo);
+        const baseFile = { base64Data, fileInfo };
+        baseFiles.push(baseFile);
+      } catch (error) {
+        console.error("Error converting file to base64:", error);
+      }
+    }
+    console.log(baseFiles);
   };
-
   return (
     <Card className="w-1/2">
       <CardHeader>
@@ -37,7 +96,7 @@ const AddProductForm = () => {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(submitHandler)}>
-          <div>
+          <div className="mt-4">
             <Label htmlFor="name">Nazwa</Label>
             <Input
               id="name"
@@ -62,7 +121,7 @@ const AddProductForm = () => {
               },
             }}
             render={({ field }) => (
-              <div>
+              <div className="mt-4">
                 <Label className="my-2 block" htmlFor="description">
                   Opis
                 </Label>
@@ -74,7 +133,7 @@ const AddProductForm = () => {
             )}
           />
 
-          <div>
+          <div className="mt-4">
             <Label htmlFor="price">Cena</Label>
             <Input
               id="price"
@@ -90,7 +149,7 @@ const AddProductForm = () => {
               <p className="sm:text-md text-red-600">{`${errors.price.message}`}</p>
             )}
           </div>
-          <div>
+          <div className="mt-4">
             <Label htmlFor="frontImage">Zdjęcie główne</Label>
             <Input
               id="frontImage"
@@ -104,14 +163,14 @@ const AddProductForm = () => {
               <p className="sm:text-md text-red-600">{`${errors.frontImage.message}`}</p>
             )}
           </div>
-          <div>
+          <div className="mt-4">
             <Label htmlFor="images">Pozostałe zdjęcia</Label>
             <Input id="images" multiple type="file" {...register("images")} />
             {errors.images && (
               <p className="sm:text-md text-red-600">{`${errors.images.message}`}</p>
             )}
           </div>
-          <div>
+          <div className="mt-4">
             <Label htmlFor="quantity">Ilość</Label>
             <Input
               id="quantity"
@@ -126,8 +185,34 @@ const AddProductForm = () => {
               <p className="sm:text-md text-red-600">{`${errors.quantity.message}`}</p>
             )}
           </div>
+          <Controller
+            name="isDigital"
+            control={control}
+            rules={{ required: "Pole nie może być puste" }}
+            render={({ field }) => (
+              <div className="mt-4">
+                <Label>Czy produkt jest cyfrowy</Label>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Czy produkt jest cyfrowy" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Tak</SelectItem>
+                    <SelectItem value="false">Nie</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.isDigital && (
+                  <p className="sm:text-md text-red-600">{`${errors.isDigital.message}`}</p>
+                )}
+              </div>
+            )}
+          />
           <div className="mt-8 flex items-center justify-center">
             <Button
+              disabled={isSubmitting ? true : false}
               className="bg-blue-500 px-8 py-5 hover:bg-blue-700"
               type="submit"
             >
