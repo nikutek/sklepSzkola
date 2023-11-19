@@ -2,10 +2,11 @@
 import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
 import { type productType } from "../products";
+import type { userType } from "~/components/admin/ordersList";
 
-interface orderType {
+export interface orderType {
   order_id: number;
-  user: string;
+  user: userType;
   user_id: string;
   order_date: Date;
   shipped_date: Date | null;
@@ -20,7 +21,9 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "GET") {
-    const orders = await db.order.findMany({ include: { products: true } });
+    const orders = await db.order.findMany({
+      include: { products: true, user: true },
+    });
     res.status(200).json(orders);
     return;
   }

@@ -65,6 +65,10 @@ const AddWorkerForm = () => {
               id="email"
               {...register("email", {
                 required: "Email jest wymagany",
+                pattern: {
+                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "To nie jest email",
+                },
               })}
             />
             {errors.email && (
@@ -78,6 +82,19 @@ const AddWorkerForm = () => {
               type="password"
               {...register("password", {
                 required: "Hasło jest wymagane",
+                minLength: {
+                  value: 8,
+                  message: "Hasło musi mieć minimum niż 8 znaków",
+                },
+                maxLength: {
+                  value: 20,
+                  message: "Hasło może mieć maksymalnie 20 znaków",
+                },
+                pattern: {
+                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/,
+                  message:
+                    "Hasło musi zawierać małą i wielką literę oraz cyfrę",
+                },
               })}
             />
             {errors.password && (

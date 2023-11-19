@@ -61,27 +61,27 @@ const DUMMY_PRODUCTS = [
     quantity: 25,
   },
 ];
-
-const ProductListItem = (props: {
-  key: string;
+export type productType = {
   name: string;
   price: number;
   quantity: number;
   image: string;
-}) => {
+};
+const ProductListItem = (props: { key: string; product: productType }) => {
+  const { name, price, quantity, image } = props.product;
   return (
     <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
       <div className="flex w-full  items-center justify-around md:w-[70%] ">
         <div className="relative h-[70px] w-[70px] md:h-[100px] md:w-[100px]">
-          <Image fill={true} alt="" src={props.image} />
+          <Image fill={true} alt="" src={image} />
         </div>
 
         <div className="flex items-center">
-          <p className="font-bold">{`${props.name}`}</p>
+          <p className="font-bold">{`${name}`}</p>
         </div>
         <div className=" flex flex-col flex-wrap items-center justify-center text-base ">
-          <p className=""> {`Price: ${props.price}zł`}</p>
-          <p> {`In magazine: ${props.quantity}`}</p>
+          <p className=""> {`Price: ${price}zł`}</p>
+          <p> {`In magazine: ${quantity}`}</p>
         </div>
       </div>
       <div className=" my-2 flex w-full justify-around md:w-1/4">
@@ -110,13 +110,7 @@ const ProductList = () => {
       <CardContent className="my-2 max-h-[85%] w-full overflow-hidden overflow-y-scroll p-2 md:my-6">
         <ul className="flex flex-col ">
           {DUMMY_PRODUCTS.map((product) => (
-            <ProductListItem
-              key={product.id}
-              image={product.image}
-              name={product.name}
-              price={product.price}
-              quantity={product.quantity}
-            />
+            <ProductListItem key={product.id} product={product} />
           ))}
         </ul>
       </CardContent>

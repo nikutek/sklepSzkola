@@ -19,10 +19,9 @@ const EditWorkerForm = (props: { worker: editWorkerType }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting },
     getValues,
     reset,
-    control,
   } = useForm<editWorkerType>();
 
   const submitHandler = (data: FieldValues) => {
@@ -70,6 +69,10 @@ const EditWorkerForm = (props: { worker: editWorkerType }) => {
               id="email"
               {...register("email", {
                 required: "Email jest wymagany",
+                pattern: {
+                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "To nie jest email",
+                },
               })}
             />
             {errors.email && (
