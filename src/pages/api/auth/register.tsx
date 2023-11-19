@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { db } from "~/server/db";
 import bcryptjs, { hash } from "bcryptjs";
 import nodemailer from "nodemailer";
+import { type userType } from "../user";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -18,14 +19,19 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "POST") {
-    const { email, password }: { email: string; password: string } = req.body;
+    const { email, password, name, address, postal, post, image } =
+      req.body as userType;
 
     // check czy wpisany jest email i hasło
-    if (!email || !password) {
-      res.status(400).json({ message: "Brak adresu email lub hasła" });
+    if (!email) {
+      res.status(400).json({ message: "Brak adresu email" });
+      return;
     }
 
-    console.log(email);
+    if (!password) {
+      res.status(400).json({ message: "Brak hasla" });
+      return;
+    }
     // sprawdzenie czy email jest poprawny
     const emailRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -58,7 +64,7 @@ export default async function handler(
       const saltRounds = 10;
       const hash = bcryptjs.hashSync(password, saltRounds);
       const user = await db.user.create({
-        data: { email, password: hash },
+        data: { email, password: hash, name, address, postal, post, image },
       });
 
       const verificationToken = user.id;
