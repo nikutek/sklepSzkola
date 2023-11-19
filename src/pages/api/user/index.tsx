@@ -28,7 +28,7 @@ export default async function handler(
       res.status(400).json("Brak email");
       return;
     }
-    const user = db.user.findUnique({ where: { email } });
+    const user = await db.user.findUnique({ where: { email } });
     res.send(user);
     return;
   }

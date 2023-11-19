@@ -33,15 +33,14 @@ export default async function handler(
       return;
     }
     // sprawdzenie czy email jest poprawny
-    const emailRegex =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     if (!emailRegex.test(email.toLowerCase())) {
       res.status(400).json({ message: "Niepoprawny email" });
       return;
     }
 
     // sprawdzenie czy hasło jest wystarczająco silne
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,20}$/;
 
     if (!passwordRegex.test(password)) {
       res.status(400).json({ message: "Zbyt słabe hasło" });
