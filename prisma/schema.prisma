@@ -49,6 +49,9 @@ model Session {
 model User {
     id            String    @id @default(cuid())
     name          String?
+    address      String?
+    postal       String?
+    post         String?
     email         String?   @unique
     password      String
     emailVerified Boolean @default(false)
