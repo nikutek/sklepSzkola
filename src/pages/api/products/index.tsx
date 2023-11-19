@@ -2,6 +2,7 @@
 import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
 import { imageType } from "../images";
+import { map } from "zod";
 
 export interface productType {
   product_id: number;
@@ -43,6 +44,16 @@ export default async function handler(
       product_id: number;
     }
 
+    const response = await fetch("http://localhost:3000/api/images", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ base64Image: mainImage }),
+    });
+    const data = (await response.json()) as imageKitType;
+    const mainImageUrl = data.source;
+
     const images: imageKitType[] = [];
     for (const img of imagesBase64) {
       const response = await fetch("http://localhost:3000/api/images", {
@@ -54,7 +65,6 @@ export default async function handler(
       });
       const data = (await response.json()) as imageKitType;
       images.push(data);
-      console.log(images);
     }
 
     const product = await db.product.create({
@@ -64,11 +74,11 @@ export default async function handler(
         quantity,
         description,
         isDigital,
-        mainImage,
+        mainImage: mainImageUrl,
         images:
           {
-            create: images.map((img) => {
-              return { source: img.source };
+            connect: images.map((img) => {
+              return { image_id: img.image_id };
             }),
           } ?? undefined,
       },
