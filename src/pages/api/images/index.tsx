@@ -84,7 +84,6 @@ export default async function handler(
         data: { source: result.url },
         include: { product: true },
       });
-      console.log(result);
 
       res.status(200).json(image);
       return;
