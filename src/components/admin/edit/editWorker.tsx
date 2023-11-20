@@ -3,32 +3,72 @@ import { Button } from "components/ui/button";
 import { Card, CardContent, CardHeader } from "components/ui/card";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import type { FieldValues } from "react-hook-form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "components/ui/select";
+import { useToast } from "components/ui/use-toast";
+import { useRouter } from "next/router";
 
 export type editWorkerType = {
   id: string;
   name: string;
-  surname: string;
-  email: string;
+  isWorker: string;
+  address: string;
+  post: string;
+  postal: string;
   password: string;
-  place: string;
 };
 
-const EditWorkerForm = (props: { worker: editWorkerType }) => {
+const EditWorkerForm = (props: { worker: editWorkerType; email: string }) => {
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    getValues,
-    reset,
+    control,
   } = useForm<editWorkerType>();
 
-  const submitHandler = (data: FieldValues) => {
-    console.log(data);
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const submitHandler = async (data: FieldValues) => {
+    const worker = {
+      ...data,
+      id: props.worker.id,
+      email: props.email,
+      isWorker: data.isWorker === "true" ? true : false,
+      isAdmin: false,
+      image: null,
+      emailVerified: true,
+      password: props.worker.password,
+    };
+    console.log(worker);
+    const response = await fetch("/api/user", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(worker),
+    });
+    if (!response.ok) {
+      toast({
+        title: "Błąd",
+        description: "Coś poszło nie tak.",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "Sukces",
+      description: "Pomyślnie edytowano pracownika.",
+    });
+    await router.replace("/admin/workers");
   };
 
-  const { id, name, surname, email, password, place } = props.worker;
+  const { name, address, postal, post } = props.worker;
   return (
     <Card className="w-1/2">
       <CardHeader>
@@ -37,73 +77,80 @@ const EditWorkerForm = (props: { worker: editWorkerType }) => {
       <CardContent>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="mt-4">
-            <Label htmlFor="name">Imie</Label>
+            <Label htmlFor="name">Imie i Nazwisko</Label>
             <Input
-              defaultValue={name}
               id="name"
+              defaultValue={name}
               {...register("name", {
-                required: "Imie jest wymagane",
+                required: "Imie i nazwisko jest wymagane",
               })}
             />
             {errors.name && (
               <p className="sm:text-md text-red-600">{`${errors.name.message}`}</p>
             )}
           </div>
+          <Controller
+            name="isWorker"
+            control={control}
+            rules={{ required: "Pole nie może być puste" }}
+            render={({ field }) => (
+              <div className="mt-4">
+                <Label>Czy użytkownik jest pracownkiem?</Label>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Czy użytkownik jest pracownikiem?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="true">Tak</SelectItem>
+                    <SelectItem value="false">Nie</SelectItem>
+                  </SelectContent>
+                </Select>
+                {errors.isWorker && (
+                  <p className="sm:text-md text-red-600">{`${errors.isWorker.message}`}</p>
+                )}
+              </div>
+            )}
+          />
           <div className="mt-4">
-            <Label htmlFor="surname">Nazwisko</Label>
+            <Label htmlFor="post">Poczta</Label>
             <Input
-              defaultValue={surname}
-              id="surname"
-              {...register("surname", {
-                required: "Nazwisko jest wymagana",
+              defaultValue={post}
+              id="post"
+              {...register("post", {
+                required: "Poczta jest wymagana",
               })}
             />
-            {errors.surname && (
-              <p className="sm:text-md text-red-600">{`${errors.surname.message}`}</p>
+            {errors.post && (
+              <p className="sm:text-md text-red-600">{`${errors.post.message}`}</p>
             )}
           </div>
           <div className="mt-4">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="postal">Kod pocztowy</Label>
             <Input
-              defaultValue={email}
-              id="email"
-              {...register("email", {
-                required: "Email jest wymagany",
-                pattern: {
-                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                  message: "To nie jest email",
-                },
+              id="postal"
+              defaultValue={postal}
+              {...register("postal", {
+                required: "Kod pocztowy jest wymagany",
               })}
             />
-            {errors.email && (
-              <p className="sm:text-md text-red-600">{`${errors.email.message}`}</p>
+            {errors.postal && (
+              <p className="sm:text-md text-red-600">{`${errors.postal.message}`}</p>
             )}
           </div>
           <div className="mt-4">
-            <Label htmlFor="password">Hasło</Label>
+            <Label htmlFor="address">Adres Zamieszkania</Label>
             <Input
-              defaultValue={password}
-              id="password"
-              type="password"
-              {...register("password", {
-                required: "Hasło jest wymagane",
+              id="address"
+              defaultValue={address}
+              {...register("address", {
+                required: "Adres zamieszkania jest wymagany",
               })}
             />
-            {errors.password && (
-              <p className="sm:text-md text-red-600">{`${errors.password.message}`}</p>
-            )}
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="place">Miejsce Zamieszkania</Label>
-            <Input
-              defaultValue={place}
-              id="place"
-              {...register("place", {
-                required: "Miejsce zamieszkania jest wymagane",
-              })}
-            />
-            {errors.place && (
-              <p className="sm:text-md text-red-600">{`${errors.place.message}`}</p>
+            {errors.address && (
+              <p className="sm:text-md text-red-600">{`${errors.address.message}`}</p>
             )}
           </div>
           <div className="mt-8 flex items-center justify-center">

@@ -4,28 +4,50 @@ import { Card, CardContent, CardHeader } from "components/ui/card";
 import { Input } from "components/ui/input";
 import { Label } from "components/ui/label";
 import { useForm } from "react-hook-form";
-import type { FieldValues } from "react-hook-form";
+import { useToast } from "components/ui/use-toast";
 
 export type addWorkerType = {
   name: string;
-  surname: string;
   email: string;
   password: string;
-  place: string;
+  address: string;
+  post: string;
   postal: string;
-  postalCode: string;
 };
 
 const AddWorkerForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting},
+    formState: { errors, isSubmitting },
     reset,
   } = useForm<addWorkerType>();
 
-  const submitHandler = (data: addWorkerType) => {
+  const { toast } = useToast();
+
+  const submitHandler = async (data: addWorkerType) => {
     const worker = { ...data, isAdmin: false, isWorker: true };
+    console.log(worker);
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(worker),
+    });
+    const { message } = (await response.json()) as { message: string };
+    if (!response.ok) {
+      toast({
+        title: "Błąd",
+        description: message ?? "Coś poszło nie tak",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    toast({
+      title: "Sukces",
+      description: `${message} Zweryfikuj konto za pomocą maila`,
+    });
+    reset();
   };
 
   return (
@@ -36,7 +58,7 @@ const AddWorkerForm = () => {
       <CardContent>
         <form onSubmit={handleSubmit(submitHandler)}>
           <div className="mt-4">
-            <Label htmlFor="name">Imie</Label>
+            <Label htmlFor="name">Imie i Nazwisko</Label>
             <Input
               id="name"
               {...register("name", {
@@ -45,18 +67,6 @@ const AddWorkerForm = () => {
             />
             {errors.name && (
               <p className="sm:text-md text-red-600">{`${errors.name.message}`}</p>
-            )}
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="surname">Nazwisko</Label>
-            <Input
-              id="surname"
-              {...register("surname", {
-                required: "Nazwisko jest wymagana",
-              })}
-            />
-            {errors.surname && (
-              <p className="sm:text-md text-red-600">{`${errors.surname.message}`}</p>
             )}
           </div>
           <div className="mt-4">
@@ -102,11 +112,23 @@ const AddWorkerForm = () => {
             )}
           </div>
           <div className="mt-4">
-            <Label htmlFor="postal">Poczta</Label>
+            <Label htmlFor="post">Poczta</Label>
+            <Input
+              id="post"
+              {...register("post", {
+                required: "Poczta jest wymagana",
+              })}
+            />
+            {errors.post && (
+              <p className="sm:text-md text-red-600">{`${errors.post.message}`}</p>
+            )}
+          </div>
+          <div className="mt-4">
+            <Label htmlFor="postal">Kod pocztowy</Label>
             <Input
               id="postal"
               {...register("postal", {
-                required: "Poczta jest wymagana",
+                required: "Kod pocztowy jest wymagany",
               })}
             />
             {errors.postal && (
@@ -114,27 +136,15 @@ const AddWorkerForm = () => {
             )}
           </div>
           <div className="mt-4">
-            <Label htmlFor="postalCode">Kod pocztowy</Label>
+            <Label htmlFor="address">Adres Zamieszkania</Label>
             <Input
-              id="postalCode"
-              {...register("postalCode", {
-                required: "Kod pocztowy jest wymagany",
-              })}
-            />
-            {errors.postalCode && (
-              <p className="sm:text-md text-red-600">{`${errors.postalCode.message}`}</p>
-            )}
-          </div>
-          <div className="mt-4">
-            <Label htmlFor="place">Adres Zamieszkania</Label>
-            <Input
-              id="place"
-              {...register("place", {
+              id="address"
+              {...register("address", {
                 required: "Adres zamieszkania jest wymagany",
               })}
             />
-            {errors.place && (
-              <p className="sm:text-md text-red-600">{`${errors.place.message}`}</p>
+            {errors.address && (
+              <p className="sm:text-md text-red-600">{`${errors.address.message}`}</p>
             )}
           </div>
           <div className="mt-8 flex items-center justify-center">

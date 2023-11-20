@@ -5,6 +5,7 @@ import { useToast } from "components/ui/use-toast";
 import { type orderType } from "~/pages/api/orders";
 
 export type userType = {
+  address: string;
   id: string;
   email: string;
   password: string;

@@ -19,8 +19,17 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "POST") {
-    const { email, password, name, address, postal, post, image } =
-      req.body as userType;
+    const {
+      email,
+      password,
+      name,
+      address,
+      postal,
+      post,
+      image,
+      isAdmin,
+      isWorker,
+    } = req.body as userType;
 
     // check czy wpisany jest email i hasło
     if (!email) {
@@ -63,7 +72,17 @@ export default async function handler(
       const saltRounds = 10;
       const hash = bcryptjs.hashSync(password, saltRounds);
       const user = await db.user.create({
-        data: { email, password: hash, name, address, postal, post, image },
+        data: {
+          email,
+          password: hash,
+          name,
+          address,
+          postal,
+          post,
+          image,
+          isAdmin,
+          isWorker,
+        },
       });
 
       const verificationToken = user.id;

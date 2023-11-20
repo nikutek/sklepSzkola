@@ -7,17 +7,22 @@ import { useToast } from "components/ui/use-toast";
 import { type userType } from "./ordersList";
 
 const WorkersListItem = (props: {
-  key: string;
   name: string;
-  surname: string;
   email: string;
+  password: string;
+  address: string;
+  post: string;
+  postal: string;
+  id: string;
   onClick: (worker_id: string) => void;
 }) => {
+  const { name, email, address, post, postal, password, id } = props;
+  console.log(id);
   return (
     <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
       <div className="flex w-full  items-center justify-around md:w-[70%] ">
         <div className="flex items-center">
-          <p className="font-bold">{`${props.name} ${props.surname}`}</p>
+          <p className="font-bold">{`${props.name}`}</p>
         </div>
         <div className="flex items-center">
           <p>{`${props.email}`}</p>
@@ -25,7 +30,22 @@ const WorkersListItem = (props: {
       </div>
       <div className=" my-2 flex w-full justify-around md:w-1/4">
         <Button className=" bg-blue-400 p-4 text-sm hover:bg-blue-500 md:text-lg">
-          Edytuj
+          <Link
+            href={{
+              pathname: "/admin/edit/worker",
+              query: {
+                id,
+                name,
+                email,
+                address,
+                post,
+                postal,
+                password,
+              },
+            }}
+          >
+            Edytuj
+          </Link>
         </Button>
         <Button className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg">
           Usuń
@@ -40,7 +60,7 @@ const WorkersList = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const { toast } = useToast();
-  console.log(workers);
+
   const fetchWorkers = async () => {
     try {
       const response = await fetch("/api/workers");
@@ -98,9 +118,13 @@ const WorkersList = () => {
             {workers.map((worker) => (
               <WorkersListItem
                 key={worker.id}
-                surname={worker.surname}
+                id={worker.id}
                 email={worker.email}
+                password={worker.password}
                 name={worker.name}
+                address={worker.address}
+                post={worker.post}
+                postal={worker.postal}
                 onClick={deleteWorkerHandler.bind(null, worker.id)}
               />
             ))}
