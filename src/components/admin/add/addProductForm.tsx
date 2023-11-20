@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "components/ui/select";
+import { useToast } from "components/ui/use-toast";
 
 export type addProductType = {
   name: string;
@@ -54,15 +55,17 @@ const fileToBase64 = (file: File): Promise<FileToBase64Result> => {
     reader.readAsDataURL(file);
   });
 };
+
 const AddProductForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
-    getValues,
+    formState: { errors, isSubmitting },
     reset,
     control,
   } = useForm<addProductType>();
+
+  const { toast } = useToast();
 
   const submitHandler = async (data: FieldValues) => {
     const frontImgFiles: FileList = data.frontImage as FileList;
@@ -78,16 +81,42 @@ const AddProductForm = () => {
 
     for (const file of imagesFilesArr) {
       try {
-        const { base64Data, fileInfo } = await fileToBase64(file);
-        console.log("Base64 Data:", base64Data);
-        console.log("File Info:", fileInfo);
-        const baseFile = { base64Data, fileInfo };
+        const { base64Data } = await fileToBase64(file);
+        const baseFile = base64Data;
         baseFiles.push(baseFile);
       } catch (error) {
         console.error("Error converting file to base64:", error);
       }
     }
-    console.log(baseFiles);
+    const isDigital = data.isDigital === "true" ? true : false;
+    const product = {
+      name: data.name as string,
+      price: data.price as number,
+      quantity: data.quantity as number,
+      description: data.description as string,
+      isDigital,
+      imagesBase64: baseFiles,
+    };
+    console.log(product);
+    const response = await fetch("/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+    });
+    if (!response.ok) {
+      toast({
+        variant: "destructive",
+        title: "Błąd",
+        description: "Coś poszło nie tak",
+      });
+      return;
+    }
+    toast({
+      title: "Sukces",
+      description: "Pomyślnie dodano produkt",
+    });
   };
   return (
     <Card className="w-1/2">

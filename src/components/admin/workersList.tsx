@@ -1,52 +1,17 @@
 import { Card, CardContent, CardHeader } from "components/ui/card";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import { Button } from "components/ui/button";
 import Link from "next/link";
+import { useToast } from "components/ui/use-toast";
+import { type userType } from "./ordersList";
 
-const DUMMY_CATEGORIES = [
-  {
-    id: "w1",
-    name: "Jan",
-    surname: "Kowalski",
-    email: "jkowalski@test.com",
-  },
-  {
-    id: "w2",
-    name: "Jan",
-    surname: "Kowalski",
-    email: "jkowalski@test.com",
-  },
-  {
-    id: "w3",
-    name: "Jarek",
-    surname: "Szparek",
-    email: "jarekszparek@test.com",
-  },
-  {
-    id: "w4",
-    name: "Jan",
-    surname: "Kowalski",
-    email: "jkowalski@test.com",
-  },
-  {
-    id: "w5",
-    name: "Jan",
-    surname: "Kowalski",
-    email: "jkowalski@test.com",
-  },
-  {
-    id: "w6",
-    name: "Marek",
-    surname: "Kowal",
-    email: "mkowal@test.com",
-  },
-];
 const WorkersListItem = (props: {
   key: string;
   name: string;
   surname: string;
   email: string;
+  onClick: (worker_id: string) => void;
 }) => {
   return (
     <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
@@ -69,7 +34,54 @@ const WorkersListItem = (props: {
     </li>
   );
 };
+
 const WorkersList = () => {
+  const [workers, setWorkers] = useState<userType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { toast } = useToast();
+  console.log(workers);
+  const fetchWorkers = async () => {
+    try {
+      const response = await fetch("/api/workers");
+      const data = (await response.json()) as {
+        workers: userType[];
+        admins: userType[];
+      };
+      setWorkers(data.workers);
+      setIsLoading(false);
+    } catch (err) {}
+  };
+  useEffect(() => {
+    fetchWorkers().catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
+  const deleteWorkerHandler = async (worker_id: string) => {
+    console.log("es");
+    const response = await fetch(`/api/workers/${worker_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!response.ok) {
+      toast({
+        variant: "destructive",
+        title: "Błąd",
+        description: "Coś poszło nie tak",
+      });
+      return;
+    }
+
+    await fetchWorkers();
+    toast({
+      title: "Sukces",
+      description: "Pomyślnie usunięto",
+    });
+  };
+
   return (
     <Card className="h-[80vh] max-h-[80vh] w-full overflow-hidden md:w-[70%] ">
       <CardHeader>
@@ -81,16 +93,20 @@ const WorkersList = () => {
         </div>
       </CardHeader>
       <CardContent className="my-2 max-h-[85%] w-[full] overflow-hidden overflow-y-scroll p-2 md:my-6">
-        <ul className="flex flex-col ">
-          {DUMMY_CATEGORIES.map((worker) => (
-            <WorkersListItem
-              key={worker.id}
-              surname={worker.surname}
-              email={worker.email}
-              name={worker.name}
-            />
-          ))}
-        </ul>
+        {!isLoading && (
+          <ul className="flex flex-col ">
+            {workers.map((worker) => (
+              <WorkersListItem
+                key={worker.id}
+                surname={worker.surname}
+                email={worker.email}
+                name={worker.name}
+                onClick={deleteWorkerHandler.bind(null, worker.id)}
+              />
+            ))}
+          </ul>
+        )}
+        {isLoading && <h2>Loading ...</h2>}
       </CardContent>
     </Card>
   );

@@ -41,10 +41,8 @@ export default async function handler(
   }
 
   if (req.method == "POST") {
-    console.log("images");
     const { base64Image } = req.body as imageType;
     const fileName = (Math.random() + 1).toString(36).substring(7);
-    console.log(fileName, base64Image);
 
     if (!(base64Image && fileName)) {
       res.status(200).json("Brak wszystkich danych");

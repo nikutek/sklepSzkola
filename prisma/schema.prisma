@@ -47,27 +47,27 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    password      String
-    emailVerified Boolean @default(false)
-    verificationToken String @default("token")
-    image         String?
-    isWorker      Boolean @default(false)
-    isAdmin       Boolean @default(false)
-    accounts      Account[]
-    sessions      Session[]
-    orders        Order[]
-    favoriteProducts favoriteProducts[]
+  id                String             @id @default(cuid())
+  name              String?
+  email             String?            @unique
+  password          String
+  emailVerified     Boolean            @default(false)
+  verificationToken String             @default("token")
+  image             String?
+  isAdmin           Boolean            @default(false)
+  isWorker          Boolean            @default(false)
+  accounts          Account[]
+  sessions          Session[]
+  orders            Order[]
+  favoriteProducts  favoriteProducts[]
 }
 
 model favoriteProducts {
-  id Int @id @default(autoincrement())
-  user_id String
-  user User @relation(fields: [user_id], references: [id])
+  id         Int     @id @default(autoincrement())
+  user_id    String
   product_id Int
-  product Product @relation(fields: [product_id], references: [product_id])
+  user       User    @relation(fields: [user_id], references: [id])
+  product    Product @relation(fields: [product_id], references: [product_id])
 
   @@index([user_id])
   @@index([product_id])
@@ -82,47 +82,62 @@ model VerificationToken {
 }
 
 model Category {
-  category_id   Int      @id @default(autoincrement())
-  name         String
-  products     Product[]
+  category_id Int       @id @default(autoincrement())
+  name        String
+  products    Product[]
 }
 
 model Product {
-  product_id   Int      @id @default(autoincrement())
-  name         String
-  price        Float
-  quantity     Float
-  description  String
-  isDigital    Boolean
-  mainImage    String?
-  images       Image[]
-  categories   Category[]
-  orders       Order[]
-  favorites    favoriteProducts[]
+  product_id  Int                @id @default(autoincrement())
+  name        String
+  price       Float
+  quantity    Float
+  description String
+  isDigital   Boolean
+  mainImage   String?
+  images      Image[]
+  categories  Category[]
+  orders      Order[]
+  favorites   favoriteProducts[]
 }
 
 model Image {
-  image_id Int @id @default(autoincrement())
-  source String
-  product_id Int? 
-  product Product? @relation(fields: [product_id], references: [product_id])
+  image_id   Int      @id @default(autoincrement())
+  source     String
+  product_id Int?
+  product    Product? @relation(fields: [product_id], references: [product_id])
 
   @@index([product_id])
 }
 
-
 model Order {
-    order_id     Int      @id @default(autoincrement())
-    products     Product[]
-    user_id         String
-    user      User     @relation(fields: [user_id], references: [id])
-    order_date   DateTime
-    shipped_date DateTime?
-    address      String
-    postal       String
-    post         String
+  order_id     Int       @id @default(autoincrement())
+  user_id      String
+  order_date   DateTime
+  shipped_date DateTime?
+  address      String
+  postal       String
+  post         String
+  products     Product[]
+  user         User      @relation(fields: [user_id], references: [id])
 
-    @@index([user_id])
+  @@index([user_id])
 }
 
+model CategoryToProduct {
+  A Int
+  B Int
 
+  @@unique([A, B], map: "_CategoryToProduct_AB_unique")
+  @@index([B], map: "_CategoryToProduct_B_index")
+  @@map("_CategoryToProduct")
+}
+
+model OrderToProduct {
+  A Int
+  B Int
+
+  @@unique([A, B], map: "_OrderToProduct_AB_unique")
+  @@index([B], map: "_OrderToProduct_B_index")
+  @@map("_OrderToProduct")
+}

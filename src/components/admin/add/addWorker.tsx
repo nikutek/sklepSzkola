@@ -12,20 +12,20 @@ export type addWorkerType = {
   email: string;
   password: string;
   place: string;
+  postal: string;
+  postalCode: string;
 };
 
 const AddWorkerForm = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
-    getValues,
+    formState: { errors, isSubmitting},
     reset,
-    control,
   } = useForm<addWorkerType>();
 
-  const submitHandler = (data: FieldValues) => {
-    console.log(data);
+  const submitHandler = (data: addWorkerType) => {
+    const worker = { ...data, isAdmin: false, isWorker: true };
   };
 
   return (
@@ -102,11 +102,35 @@ const AddWorkerForm = () => {
             )}
           </div>
           <div className="mt-4">
-            <Label htmlFor="place">Miejsce Zamieszkania</Label>
+            <Label htmlFor="postal">Poczta</Label>
+            <Input
+              id="postal"
+              {...register("postal", {
+                required: "Poczta jest wymagana",
+              })}
+            />
+            {errors.postal && (
+              <p className="sm:text-md text-red-600">{`${errors.postal.message}`}</p>
+            )}
+          </div>
+          <div className="mt-4">
+            <Label htmlFor="postalCode">Kod pocztowy</Label>
+            <Input
+              id="postalCode"
+              {...register("postalCode", {
+                required: "Kod pocztowy jest wymagany",
+              })}
+            />
+            {errors.postalCode && (
+              <p className="sm:text-md text-red-600">{`${errors.postalCode.message}`}</p>
+            )}
+          </div>
+          <div className="mt-4">
+            <Label htmlFor="place">Adres Zamieszkania</Label>
             <Input
               id="place"
               {...register("place", {
-                required: "Miejsce zamieszkania jest wymagane",
+                required: "Adres zamieszkania jest wymagany",
               })}
             />
             {errors.place && (

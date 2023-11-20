@@ -10,7 +10,6 @@ export interface productType {
   quantity: number;
   description: string;
   isDigital: boolean;
-  mainImage: string;
   imagesBase64: string[];
 }
 
@@ -24,15 +23,9 @@ export default async function handler(
     return;
   }
   if (req.method === "POST") {
-    const {
-      name,
-      price,
-      quantity,
-      description,
-      isDigital,
-      mainImage,
-      imagesBase64,
-    } = req.body as productType;
+    const { name, price, quantity, description, isDigital, imagesBase64 } =
+      req.body as productType;
+    console.log(req.body);
     if (!imagesBase64) {
       res.status(400).json("Brak zdjęć");
       return;
@@ -54,7 +47,6 @@ export default async function handler(
       });
       const data = (await response.json()) as imageKitType;
       images.push(data);
-      console.log(images);
     }
 
     const product = await db.product.create({
@@ -63,8 +55,8 @@ export default async function handler(
         price,
         quantity,
         description,
+        mainImage: "",
         isDigital,
-        mainImage,
         images:
           {
             create: images.map((img) => {
@@ -79,15 +71,8 @@ export default async function handler(
   }
 
   if (req.method === "PATCH") {
-    const {
-      product_id,
-      name,
-      price,
-      quantity,
-      description,
-      isDigital,
-      mainImage,
-    } = req.body as productType;
+    const { product_id, name, price, quantity, description, isDigital } =
+      req.body as productType;
     const product = await db.product.update({
       where: {
         product_id,
@@ -98,7 +83,7 @@ export default async function handler(
         quantity,
         description,
         isDigital,
-        mainImage,
+        mainImage: "",
       },
     });
 
@@ -118,3 +103,10 @@ export default async function handler(
     return;
   }
 }
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb",
+    },
+  },
+};
