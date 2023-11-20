@@ -34,11 +34,26 @@ export default async function handler(
       mainImage,
       imagesBase64,
     } = req.body as productType;
-    console.log(req.body);
+    console.log("huj");
     if (!imagesBase64) {
       res.status(400).json("Brak zdjęć");
       return;
     }
+
+    const base64Regex =
+      /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+    if (!base64Regex.test(mainImage)) {
+      res.status(200).json("Nieprawidłowy plik");
+      return;
+    }
+
+    for (const img of imagesBase64) {
+      if (!base64Regex.test(img)) {
+        res.status(200).json("Nieprawidłowy plik");
+        return;
+      }
+    }
+
     interface imageKitType {
       image_id: number;
       source: string;
@@ -68,6 +83,7 @@ export default async function handler(
       images.push(data);
     }
 
+    // console.log(mainImageUrl, images);
     const product = await db.product.create({
       data: {
         name,

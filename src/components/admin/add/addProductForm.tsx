@@ -76,14 +76,14 @@ const AddProductForm = () => {
     }
     const file = frontImgFiles[0]!;
     const { base64Data } = await fileToBase64(file);
-    const mainImage = base64Data;
+    const mainImage = base64Data.split(",").pop();
 
     const baseFiles = [];
 
     for (const file of imagesFilesArr) {
       try {
         const { base64Data } = await fileToBase64(file);
-        const baseFile = base64Data;
+        const baseFile = base64Data.split(",").pop();
         baseFiles.push(baseFile);
       } catch (error) {
         console.error("Error converting file to base64:", error);
