@@ -47,19 +47,19 @@ model Session {
 }
 
 model User {
-  id                String             @id @default(cuid())
-  name              String?
-  email             String?            @unique
-  password          String
-  emailVerified     Boolean            @default(false)
-  verificationToken String             @default("token")
-  image             String?
-  isAdmin           Boolean            @default(false)
-  isWorker          Boolean            @default(false)
-  accounts          Account[]
-  sessions          Session[]
-  orders            Order[]
-  favoriteProducts  favoriteProducts[]
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    password      String
+    emailVerified Boolean @default(false)
+    verificationToken String @default("token")
+    image         String?
+    isWorker      Boolean @default(false)
+    isAdmin       Boolean @default(false)
+    accounts      Account[]
+    sessions      Session[]
+    orders        Order[]
+    favoriteProducts favoriteProducts[]
 }
 
 model favoriteProducts {
