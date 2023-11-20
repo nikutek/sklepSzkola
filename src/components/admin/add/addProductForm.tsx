@@ -75,7 +75,8 @@ const AddProductForm = () => {
       return;
     }
     const file = frontImgFiles[0]!;
-    imagesFilesArr.unshift(file);
+    const { base64Data } = await fileToBase64(file);
+    const mainImage = base64Data;
 
     const baseFiles = [];
 
@@ -96,6 +97,7 @@ const AddProductForm = () => {
       description: data.description as string,
       isDigital,
       imagesBase64: baseFiles,
+      mainImage,
     };
     console.log(product);
     const response = await fetch("/api/products", {

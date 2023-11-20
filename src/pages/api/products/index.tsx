@@ -34,6 +34,7 @@ export default async function handler(
       mainImage,
       imagesBase64,
     } = req.body as productType;
+    console.log(req.body);
     if (!imagesBase64) {
       res.status(400).json("Brak zdjęć");
       return;
@@ -128,3 +129,10 @@ export default async function handler(
     return;
   }
 }
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "10mb", // Set desired value here
+    },
+  },
+};
