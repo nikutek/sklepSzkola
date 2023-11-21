@@ -1,79 +1,29 @@
 import { Card, CardContent, CardHeader } from "components/ui/card";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "components/ui/button";
 import Link from "next/link";
-const DUMMY_PRODUCTS = [
-  {
-    id: "p1",
-    name: "Product 1",
-    image:
-      "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 20.98,
-    quantity: 45,
-  },
-  {
-    id: "p2",
-    name: "Product 2",
-    image:
-      "https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 25.28,
-    quantity: 44,
-  },
-  {
-    id: "p3",
-    name: "Product 3",
-    image:
-      "https://images.pexels.com/photos/90946/pexels-photo-90946.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 56.54,
-    quantity: 11,
-  },
-  {
-    id: "p4",
-    name: "Product 4",
-    image:
-      "https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 21.98,
-    quantity: 22,
-  },
-  {
-    id: "p5",
-    name: "Product 5",
-    image:
-      "https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 567.98,
-    quantity: 25,
-  },
-  {
-    id: "p6",
-    name: "Product 6",
-    image:
-      "https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 567.98,
-    quantity: 25,
-  },
-  {
-    id: "p7",
-    name: "Product 7",
-    image:
-      "https://images.pexels.com/photos/341523/pexels-photo-341523.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-    price: 567.98,
-    quantity: 25,
-  },
-];
+import { useToast } from "components/ui/use-toast";
+
 export type productType = {
+  product_id: number;
   name: string;
   price: number;
   quantity: number;
-  image: string;
+  mainImage: string;
+  images: string[];
 };
-const ProductListItem = (props: { key: string; product: productType }) => {
-  const { name, price, quantity, image } = props.product;
+const ProductListItem = (props: {
+  key: number;
+  product: productType;
+  onDelete: (productId: number) => void;
+}) => {
+  const { name, price, quantity, mainImage, product_id } = props.product;
   return (
     <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
       <div className="flex w-full  items-center justify-around md:w-[70%] ">
         <div className="relative h-[70px] w-[70px] md:h-[100px] md:w-[100px]">
-          <Image fill={true} alt="" src={image} />
+          <Image fill={true} alt="" src={mainImage} />
         </div>
 
         <div className="flex items-center">
@@ -88,7 +38,10 @@ const ProductListItem = (props: { key: string; product: productType }) => {
         <Button className=" bg-blue-400 p-4 text-sm hover:bg-blue-500 md:text-lg">
           Edytuj
         </Button>
-        <Button className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg">
+        <Button
+          onClick={props.onDelete.bind(null, product_id)}
+          className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg"
+        >
           Usuń
         </Button>
       </div>
@@ -97,6 +50,50 @@ const ProductListItem = (props: { key: string; product: productType }) => {
 };
 
 const ProductList = () => {
+  const [products, setProducts] = useState<productType[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { toast } = useToast();
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch("/api/products");
+      const data = (await response.json()) as productType[];
+      console.log(data);
+      setProducts(data);
+      setIsLoading(false);
+    } catch (err) {}
+  };
+  useEffect(() => {
+    fetchProducts().catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
+  const deleteProductHandler = async (product_id: number) => {
+    const response = await fetch("/api/products", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ product_id }),
+    });
+    if (!response.ok) {
+      toast({
+        variant: "destructive",
+        title: "Błąd",
+        description: "Coś poszło nie tak",
+      });
+      return;
+    }
+
+    await fetchProducts();
+    toast({
+      title: "Sukces",
+      description: "Pomyślnie usunięto",
+    });
+  };
+
   return (
     <Card className="h-[80vh] max-h-[80vh] w-full overflow-hidden md:w-[95%] ">
       <CardHeader>
@@ -107,13 +104,20 @@ const ProductList = () => {
           </Button>
         </div>
       </CardHeader>
-      <CardContent className="my-2 max-h-[85%] w-full overflow-hidden overflow-y-scroll p-2 md:my-6">
-        <ul className="flex flex-col ">
-          {DUMMY_PRODUCTS.map((product) => (
-            <ProductListItem key={product.id} product={product} />
-          ))}
-        </ul>
-      </CardContent>
+      {!isLoading && (
+        <CardContent className="my-2 max-h-[85%] w-full overflow-hidden overflow-y-scroll p-2 md:my-6">
+          <ul className="flex flex-col ">
+            {products.map((product) => (
+              <ProductListItem
+                key={product.product_id}
+                product={product}
+                onDelete={deleteProductHandler}
+              />
+            ))}
+          </ul>
+        </CardContent>
+      )}
+      {isLoading && <h2 className="text-center">Loading...</h2>}
     </Card>
   );
 };

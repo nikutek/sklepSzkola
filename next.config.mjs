@@ -9,7 +9,6 @@ const config = {
   reactStrictMode: true,
   output: "standalone",
 
-
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.
    *
@@ -20,7 +19,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["images.pexels.com"],
+    domains: ["ik.imagekit.io"],
   },
 };
 
