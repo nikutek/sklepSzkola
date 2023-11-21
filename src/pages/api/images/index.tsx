@@ -46,6 +46,7 @@ export default async function handler(
 
     if (!(base64Image && fileName)) {
       res.status(200).json("Brak wszystkich danych");
+      return;
     }
 
     const base64Regex =

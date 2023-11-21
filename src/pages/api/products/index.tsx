@@ -34,7 +34,6 @@ export default async function handler(
       mainImage,
       imagesBase64,
     } = req.body as productType;
-    console.log("huj");
     if (!imagesBase64) {
       res.status(400).json("Brak zdjęć");
       return;
@@ -69,7 +68,6 @@ export default async function handler(
     });
     const data = (await response.json()) as imageKitType;
     const mainImageUrl = data.source;
-
     const images: imageKitType[] = [];
     for (const img of imagesBase64) {
       const response = await fetch("http://localhost:3000/api/images", {
@@ -83,7 +81,6 @@ export default async function handler(
       images.push(data);
     }
 
-    // console.log(mainImageUrl, images);
     const product = await db.product.create({
       data: {
         name,

@@ -94,6 +94,13 @@ export default function Login() {
     const userData = {
       email: getValues("email"),
       password: getValues("password"),
+      isAdmin: false,
+      isWorker: false,
+      name: "",
+      address: "",
+      post: "",
+      postal: "",
+      image: null,
     };
     if (mode === "sign-up") {
       try {
