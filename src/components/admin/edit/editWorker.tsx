@@ -134,6 +134,11 @@ const EditWorkerForm = (props: { worker: editWorkerType; email: string }) => {
               defaultValue={postal}
               {...register("postal", {
                 required: "Kod pocztowy jest wymagany",
+                pattern: {
+                  value: /\d{2}-\d{3}/,
+                  message:
+                    "Błędny kod pocztowy. Kod pocztowy musi mieć format xx-xxx",
+                },
               })}
             />
             {errors.postal && (
