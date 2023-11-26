@@ -3,6 +3,7 @@ import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
 import { imageType } from "../images";
 import { map } from "zod";
+import { Prisma } from "@prisma/client";
 
 export interface productType {
   product_id: number;
@@ -13,6 +14,8 @@ export interface productType {
   isDigital: boolean;
   mainImage: string;
   imagesBase64: string[];
+  categoriesID: number[];
+  categories: { name: string }[];
 }
 
 export default async function handler(
@@ -33,6 +36,8 @@ export default async function handler(
       isDigital,
       mainImage,
       imagesBase64,
+      categoriesID,
+      categories,
     } = req.body as productType;
     if (!imagesBase64) {
       res.status(400).json("Brak zdjęć");
@@ -81,6 +86,7 @@ export default async function handler(
       images.push(data);
     }
 
+    // istniejąca kategoria
     const product = await db.product.create({
       data: {
         name,
@@ -89,6 +95,12 @@ export default async function handler(
         description,
         isDigital,
         mainImage: mainImageUrl,
+        categories: {
+          connectOrCreate: categories.map((category) => ({
+            where: { name: category.name },
+            create: { name: category.name },
+          })),
+        },
         images:
           {
             connect: images.map((img) => {
@@ -96,7 +108,8 @@ export default async function handler(
             }),
           } ?? undefined,
       },
-      include: { images: true },
+
+      include: { images: true, categories: true },
     });
     res.status(200).json(product);
     return;
@@ -111,7 +124,19 @@ export default async function handler(
       description,
       isDigital,
       mainImage,
+      categoriesID = [],
     } = req.body as productType;
+
+    // Odłączenie istniejących już relacji z kategoriami
+    if (categoriesID) {
+      await db.product.update({
+        where: { product_id },
+        data: {
+          categories: { set: [] },
+        },
+      });
+    }
+
     const product = await db.product.update({
       where: {
         product_id,
@@ -123,7 +148,13 @@ export default async function handler(
         description,
         isDigital,
         mainImage,
+        categories: {
+          connect: categoriesID.map((id) => {
+            return { category_id: id };
+          }),
+        },
       },
+      include: { categories: true },
     });
 
     res.status(200).json(product);
