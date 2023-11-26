@@ -85,9 +85,9 @@ model VerificationToken {
 }
 
 model Category {
-  category_id Int       @id @default(autoincrement())
-  name        String
-  products    Product[]
+  category_id   Int      @id @default(autoincrement())
+  name         String    @unique
+  products     Product[]
 }
 
 model Product {
