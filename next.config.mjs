@@ -8,6 +8,7 @@ await import("./src/env.mjs");
 const config = {
   reactStrictMode: true,
   output: "standalone",
+  profiler: true,
 
   /**
    * If you are using `appDir` then you must comment the below `i18n` config out.

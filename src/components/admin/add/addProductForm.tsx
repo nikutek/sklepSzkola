@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
 import { Card, CardContent, CardHeader } from "components/ui/card";
 import { Input } from "components/ui/input";
@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "components/ui/select";
 import { useToast } from "components/ui/use-toast";
+import type { categoryType } from "~/pages/api/categories";
+import { MultiSelect } from "components/ui/mulitselect";
 
 export type addProductType = {
   name: string;
@@ -23,6 +25,7 @@ export type addProductType = {
   price: number;
   quantity: number;
   isDigital: string;
+  categoriesId: string[];
 };
 interface FileToBase64Result {
   base64Data: string;
@@ -57,6 +60,8 @@ const fileToBase64 = (file: File): Promise<FileToBase64Result> => {
 };
 
 const AddProductForm = () => {
+  const [categories, setCategories] = useState<categoryType[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -65,12 +70,26 @@ const AddProductForm = () => {
     control,
   } = useForm<addProductType>();
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories");
+      const data = (await response.json()) as categoryType[];
+      setCategories(data);
+    } catch (err) {}
+  };
+  useEffect(() => {
+    fetchCategories().catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
   const { toast } = useToast();
 
   const submitHandler = async (data: FieldValues) => {
     const frontImgFiles: FileList = data.frontImage as FileList;
     const imagesFiles: FileList = data.images as FileList;
     const imagesFilesArr = Array.from(imagesFiles);
+    console.log(data);
     if (frontImgFiles.length === 0 || imagesFilesArr.length === 0) {
       return;
     }
@@ -99,7 +118,6 @@ const AddProductForm = () => {
       imagesBase64: baseFiles,
       mainImage,
     };
-    console.log(product);
     const response = await fetch("/api/products", {
       method: "POST",
       headers: {
@@ -237,6 +255,28 @@ const AddProductForm = () => {
                 </Select>
                 {errors.isDigital && (
                   <p className="sm:text-md text-red-600">{`${errors.isDigital.message}`}</p>
+                )}
+              </div>
+            )}
+          />
+          <Controller
+            name="categoriesId"
+            control={control}
+            rules={{ required: "Pole nie może być puste" }}
+            defaultValue={[]}
+            render={({ field }) => (
+              <div className="mt-4">
+                <Label>Wybierz kategorie</Label>
+                <MultiSelect
+                  selected={field.value}
+                  options={categories.map((category) => ({
+                    label: category.name,
+                    value: category.category_id + "",
+                  }))}
+                  {...field}
+                />
+                {errors.categoriesId && (
+                  <p className="sm:text-md text-red-600">{`${errors.categoriesId.message}`}</p>
                 )}
               </div>
             )}
