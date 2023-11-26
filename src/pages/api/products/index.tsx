@@ -3,6 +3,7 @@ import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
 import { imageType } from "../images";
 import { map } from "zod";
+import { Prisma } from "@prisma/client";
 
 export interface productType {
   product_id: number;
@@ -13,6 +14,7 @@ export interface productType {
   isDigital: boolean;
   mainImage: string;
   imagesBase64: string[];
+  categoriesID: number[];
 }
 
 export default async function handler(
@@ -97,7 +99,19 @@ export default async function handler(
       description,
       isDigital,
       mainImage,
+      categoriesID = [],
     } = req.body as productType;
+
+    // Odłączenie istniejących już relacji z kategoriami
+    if (categoriesID) {
+      await db.product.update({
+        where: { product_id },
+        data: {
+          categories: { set: [] },
+        },
+      });
+    }
+
     const product = await db.product.update({
       where: {
         product_id,
@@ -109,7 +123,13 @@ export default async function handler(
         description,
         isDigital,
         mainImage,
+        categories: {
+          connect: categoriesID.map((id) => {
+            return { category_id: id };
+          }),
+        },
       },
+      include: { categories: true },
     });
 
     res.status(200).json(product);
