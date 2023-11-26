@@ -25,7 +25,7 @@ export type addProductType = {
   price: number;
   quantity: number;
   isDigital: string;
-  categoriesId: string[];
+  categories: string[];
 };
 interface FileToBase64Result {
   base64Data: string;
@@ -89,7 +89,7 @@ const AddProductForm = () => {
     const frontImgFiles: FileList = data.frontImage as FileList;
     const imagesFiles: FileList = data.images as FileList;
     const imagesFilesArr = Array.from(imagesFiles);
-    console.log(data);
+
     if (frontImgFiles.length === 0 || imagesFilesArr.length === 0) {
       return;
     }
@@ -109,6 +109,10 @@ const AddProductForm = () => {
       }
     }
     const isDigital = data.isDigital === "true" ? true : false;
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const categoriesObjs = data.categories.map((category: string) => ({
+      name: category,
+    })) as { name: string }[];
     const product = {
       name: data.name as string,
       price: data.price as number,
@@ -117,6 +121,7 @@ const AddProductForm = () => {
       isDigital,
       imagesBase64: baseFiles,
       mainImage,
+      categories: categoriesObjs,
     };
     const response = await fetch("/api/products", {
       method: "POST",
@@ -202,7 +207,6 @@ const AddProductForm = () => {
             <Label htmlFor="frontImage">Zdjęcie główne</Label>
             <Input
               id="frontImage"
-              multiple
               type="file"
               {...register("frontImage", {
                 required: "Zdjęcie główne jest wymagane",
@@ -260,7 +264,7 @@ const AddProductForm = () => {
             )}
           />
           <Controller
-            name="categoriesId"
+            name="categories"
             control={control}
             rules={{ required: "Pole nie może być puste" }}
             defaultValue={[]}
@@ -271,12 +275,12 @@ const AddProductForm = () => {
                   selected={field.value}
                   options={categories.map((category) => ({
                     label: category.name,
-                    value: category.category_id + "",
+                    value: category.name,
                   }))}
                   {...field}
                 />
-                {errors.categoriesId && (
-                  <p className="sm:text-md text-red-600">{`${errors.categoriesId.message}`}</p>
+                {errors.categories && (
+                  <p className="sm:text-md text-red-600">{`${errors.categories.message}`}</p>
                 )}
               </div>
             )}
