@@ -15,6 +15,7 @@ export interface productType {
   mainImage: string;
   imagesBase64: string[];
   categoriesID: number[];
+  categories: { name: string }[];
 }
 
 export default async function handler(
@@ -35,11 +36,14 @@ export default async function handler(
       isDigital,
       mainImage,
       imagesBase64,
+      categoriesID,
+      categories,
     } = req.body as productType;
     if (!imagesBase64) {
       res.status(400).json("Brak zdjęć");
       return;
     }
+
     interface imageKitType {
       image_id: number;
       source: string;
@@ -69,6 +73,7 @@ export default async function handler(
       images.push(data);
     }
 
+    // istniejąca kategoria
     const product = await db.product.create({
       data: {
         name,
@@ -77,6 +82,12 @@ export default async function handler(
         description,
         isDigital,
         mainImage: mainImageUrl,
+        categories: {
+          connectOrCreate: categories.map((category) => ({
+            where: { name: category.name },
+            create: { name: category.name },
+          })),
+        },
         images:
           {
             connect: images.map((img) => {
@@ -84,7 +95,8 @@ export default async function handler(
             }),
           } ?? undefined,
       },
-      include: { images: true },
+
+      include: { images: true, categories: true },
     });
     res.status(200).json(product);
     return;
