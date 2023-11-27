@@ -20,28 +20,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method === "GET") {
-    const { email } = req.body as {
-      email: string;
-    };
-    if (!email) {
-      res.status(400).json("Brak email");
-      return;
-    }
-    const user = await db.user.findUnique({
-      where: { email },
-      include: {
-        orders: {
-          include: {
-            products: { include: { images: true } },
-          },
-        },
-        favoriteProducts: { include: { product: true } },
-      },
-    });
-    res.send(user);
-    return;
-  }
   if (req.method === "PATCH") {
     const {
       id,
