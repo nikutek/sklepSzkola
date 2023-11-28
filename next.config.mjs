@@ -19,7 +19,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["ik.imagekit.io"],
+    domains: ["ik.imagekit.io", "cdn-icons-png.flaticon.com"],
   },
 };
 
