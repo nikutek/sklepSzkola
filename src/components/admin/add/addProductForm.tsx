@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
 import { Card, CardContent, CardHeader } from "components/ui/card";
 import { Input } from "components/ui/input";
@@ -14,6 +14,8 @@ import {
   SelectValue,
 } from "components/ui/select";
 import { useToast } from "components/ui/use-toast";
+import type { categoryType } from "~/pages/api/categories";
+import { MultiSelect } from "components/ui/mulitselect";
 
 export type addProductType = {
   name: string;
@@ -23,6 +25,7 @@ export type addProductType = {
   price: number;
   quantity: number;
   isDigital: string;
+  categories: string[];
 };
 interface FileToBase64Result {
   base64Data: string;
@@ -57,6 +60,8 @@ const fileToBase64 = (file: File): Promise<FileToBase64Result> => {
 };
 
 const AddProductForm = () => {
+  const [categories, setCategories] = useState<categoryType[]>([]);
+
   const {
     register,
     handleSubmit,
@@ -65,12 +70,26 @@ const AddProductForm = () => {
     control,
   } = useForm<addProductType>();
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch("/api/categories");
+      const data = (await response.json()) as categoryType[];
+      setCategories(data);
+    } catch (err) {}
+  };
+  useEffect(() => {
+    fetchCategories().catch((err) => {
+      console.log(err);
+    });
+  }, []);
+
   const { toast } = useToast();
 
   const submitHandler = async (data: FieldValues) => {
     const frontImgFiles: FileList = data.frontImage as FileList;
     const imagesFiles: FileList = data.images as FileList;
     const imagesFilesArr = Array.from(imagesFiles);
+
     if (frontImgFiles.length === 0 || imagesFilesArr.length === 0) {
       return;
     }
@@ -90,6 +109,10 @@ const AddProductForm = () => {
       }
     }
     const isDigital = data.isDigital === "true" ? true : false;
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+    const categoriesObjs = data.categories.map((category: string) => ({
+      name: category,
+    })) as { name: string }[];
     const product = {
       name: data.name as string,
       price: data.price as number,
@@ -98,8 +121,8 @@ const AddProductForm = () => {
       isDigital,
       imagesBase64: baseFiles,
       mainImage,
+      categories: categoriesObjs,
     };
-    console.log(product);
     const response = await fetch("/api/products", {
       method: "POST",
       headers: {
@@ -184,7 +207,6 @@ const AddProductForm = () => {
             <Label htmlFor="frontImage">Zdjęcie główne</Label>
             <Input
               id="frontImage"
-              multiple
               type="file"
               {...register("frontImage", {
                 required: "Zdjęcie główne jest wymagane",
@@ -237,6 +259,28 @@ const AddProductForm = () => {
                 </Select>
                 {errors.isDigital && (
                   <p className="sm:text-md text-red-600">{`${errors.isDigital.message}`}</p>
+                )}
+              </div>
+            )}
+          />
+          <Controller
+            name="categories"
+            control={control}
+            rules={{ required: "Pole nie może być puste" }}
+            defaultValue={[]}
+            render={({ field }) => (
+              <div className="mt-4">
+                <Label>Wybierz kategorie</Label>
+                <MultiSelect
+                  selected={field.value}
+                  options={categories.map((category) => ({
+                    label: category.name,
+                    value: category.name,
+                  }))}
+                  {...field}
+                />
+                {errors.categories && (
+                  <p className="sm:text-md text-red-600">{`${errors.categories.message}`}</p>
                 )}
               </div>
             )}

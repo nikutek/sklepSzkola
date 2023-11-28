@@ -36,7 +36,6 @@ export default async function handler(
       isDigital,
       mainImage,
       imagesBase64,
-      categoriesID,
       categories,
     } = req.body as productType;
     if (!imagesBase64) {
