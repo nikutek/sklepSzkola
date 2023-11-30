@@ -26,7 +26,6 @@ const Settings: NextPage<{ userDataProps: UserDataType }> = ({
   const postalRef = useRef<HTMLInputElement>(null);
 
   const confirmNameChangeHandler = async () => {
-    console.log("object");
     if (!nameRef.current) {
       return;
     }
@@ -36,16 +35,63 @@ const Settings: NextPage<{ userDataProps: UserDataType }> = ({
         id: userData.id,
         name: nameRef.current.value,
       }),
+      headers: {
+        "Content-type": "application/json",
+      },
     });
+    setIsNameChanged(false);
+    // TODO: TOAST
   };
-  const confirmAddressChangeHandler = () => {
-    console.log("object");
+  const confirmAddressChangeHandler = async () => {
+    if (!addressRef.current) {
+      return;
+    }
+    await fetch("/api/user", {
+      method: "PATCH",
+      body: JSON.stringify({
+        id: userData.id,
+        name: addressRef.current.value,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    setIsAddressChanged(false);
+    // TODO: TOAST
   };
-  const confirmPostChangeHandler = () => {
-    console.log("object");
+  const confirmPostChangeHandler = async () => {
+    if (!postRef.current) {
+      return;
+    }
+    await fetch("/api/user", {
+      method: "PATCH",
+      body: JSON.stringify({
+        id: userData.id,
+        name: postRef.current.value,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    setIsPostChanged(false);
+    // TODO: TOAST
   };
-  const confirmPostalChangeHandler = () => {
-    console.log("object");
+  const confirmPostalChangeHandler = async () => {
+    if (!postalRef.current) {
+      return;
+    }
+    await fetch("/api/user", {
+      method: "PATCH",
+      body: JSON.stringify({
+        id: userData.id,
+        name: postalRef.current.value,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    setIsPostalChanged(false);
+    // TODO: TOAST
   };
 
   return (
