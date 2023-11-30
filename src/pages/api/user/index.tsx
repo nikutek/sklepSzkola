@@ -37,17 +37,16 @@ export default async function handler(
     const user = await db.user.update({
       where: { id },
       data: {
-        id,
-        name,
-        address,
-        postal,
-        post,
-        email,
-        password,
-        emailVerified,
-        image,
-        isWorker,
-        isAdmin,
+        name: name ?? undefined,
+        address: address ?? undefined,
+        postal: postal ?? undefined,
+        post: post ?? undefined,
+        email: email ?? undefined,
+        password: password ?? undefined,
+        emailVerified: emailVerified ?? undefined,
+        image: image ?? undefined,
+        isWorker: isWorker ?? undefined,
+        isAdmin: isAdmin ?? undefined,
       },
     });
 
