@@ -23,7 +23,7 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method === "GET") {
-    const products = await db.product.findMany();
+    const products = await db.product.findMany({ include: { images: true } });
     res.status(200).json(products);
     return;
   }
