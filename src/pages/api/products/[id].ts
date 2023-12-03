@@ -11,7 +11,6 @@ export default async function handler(
     }
     const id: number = parseInt(req.query.id);
 
-    console.log(id);
     const product = await db.product.findUnique({
       where: { product_id: id },
       include: { images: true, categories: true },
