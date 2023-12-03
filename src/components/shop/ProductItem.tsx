@@ -2,10 +2,11 @@ import { Button } from "components/ui/button";
 import { Card } from "components/ui/card";
 import { Label } from "components/ui/label";
 import Image from "next/image";
+import Link from "next/link";
 import type { productType } from "~/pages/api/products";
 
 const ProductItem = (props: { product: productType }) => {
-  const { name, price, mainImage } = props.product;
+  const { name, price, mainImage, product_id } = props.product;
 
   return (
     <Card className="relative m-2 flex h-[40%]  w-1/6 flex-col items-center  p-2 ">
@@ -20,7 +21,15 @@ const ProductItem = (props: { product: productType }) => {
           />
         </div>
         <div className="flex w-full flex-col items-center justify-between p-2">
-          <Label className="p-2 text-lg">{`${name}`}</Label>
+          <Link
+            href={{
+              pathname: "/product",
+              query: { id: product_id },
+            }}
+          >
+            <Label className="cursor-pointer p-2 text-lg hover:underline">{`${name}`}</Label>
+          </Link>
+
           <Label>{`${price} zł`}</Label>
         </div>
         <div>

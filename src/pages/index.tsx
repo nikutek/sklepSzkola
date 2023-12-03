@@ -5,6 +5,7 @@ import { Button } from "components/ui/button";
 import { Progress } from "components/ui/progress";
 import { IKImage, IKVideo, IKContext, IKUpload } from "imagekitio-react";
 import Products from "~/components/shop/Products";
+import { Slider } from "~/components/shop/UI/Slider";
 
 export default function App() {
   const authenticator = async () => {
