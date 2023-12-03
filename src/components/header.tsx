@@ -6,6 +6,8 @@ import { signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { faRectangleXmark } from "@fortawesome/free-regular-svg-icons";
+import { Popover, PopoverContent, PopoverTrigger } from "components/ui/popover";
+import Cart from "./shop/Cart";
 
 const Header = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -57,6 +59,12 @@ const Header = () => {
               )}
             </ul>
           </nav>
+          <Popover>
+            <PopoverTrigger>Koszyk</PopoverTrigger>
+            <PopoverContent>
+              <Cart></Cart>
+            </PopoverContent>
+          </Popover>
           {status === "authenticated" && (
             <Button
               onClick={logoutHandler}
