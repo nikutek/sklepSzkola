@@ -3,6 +3,7 @@ import Product from "~/components/shop/Product";
 import type { ProductData } from "~/components/shop/Product";
 const ProductPage = (props: { product: ProductData }) => {
   const { product } = props;
+  console.log(product);
   if (!product) {
     return <></>;
   }

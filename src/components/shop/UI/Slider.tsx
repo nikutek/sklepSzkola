@@ -9,7 +9,6 @@ import Image from "next/image";
 
 export const Slider = (props: { imagesSrc: string[] }) => {
   const { imagesSrc } = props;
-  console.log(imagesSrc);
   return (
     <div className="h-full w-[500px] ">
       <Swiper

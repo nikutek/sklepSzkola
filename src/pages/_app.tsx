@@ -5,6 +5,7 @@ import Header from "~/components/header";
 import { QueryClient, QueryClientProvider } from "react-query";
 import "~/styles/globals.css";
 import { Toaster } from "components/ui/toaster";
+import { ShoppingCartProvider } from "~/store/cartCtx";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -14,11 +15,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session}>
-      <QueryClientProvider client={queryClient}>
-        <Header />
-        <Component {...pageProps} />
-        <Toaster />
-      </QueryClientProvider>
+      <ShoppingCartProvider>
+        <QueryClientProvider client={queryClient}>
+          <Header />
+          <Component {...pageProps} />
+          <Toaster />
+        </QueryClientProvider>
+      </ShoppingCartProvider>
     </SessionProvider>
   );
 };
