@@ -45,7 +45,6 @@ export const ShoppingCartProvider = ({
         });
       }
     });
-    console.log(cartItems);
   };
   const decreaseCartQuantity = (id: number) => {
     setCartItems((currItems) => {

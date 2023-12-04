@@ -37,7 +37,6 @@ const ProductItem = (props: { product: productType }) => {
           <Button
             onClick={() => {
               increaseCartQuantity(product_id);
-              console.log(cartItems);
             }}
           >
             Dodaj do Koszyka
