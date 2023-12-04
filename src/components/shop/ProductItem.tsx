@@ -3,10 +3,10 @@ import { Card } from "components/ui/card";
 import { Label } from "components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
-import type { productType } from "~/pages/api/products";
 import { useShoppingCart } from "~/store/cartCtx";
+import type { ProductData } from "./Product";
 
-const ProductItem = (props: { product: productType }) => {
+const ProductItem = (props: { product: ProductData }) => {
   const { name, price, mainImage, product_id } = props.product;
   const { increaseCartQuantity, cartItems } = useShoppingCart();
   return (
@@ -36,7 +36,7 @@ const ProductItem = (props: { product: productType }) => {
         <div>
           <Button
             onClick={() => {
-              increaseCartQuantity(product_id);
+              increaseCartQuantity(props.product);
             }}
           >
             Dodaj do Koszyka

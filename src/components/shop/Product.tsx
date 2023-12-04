@@ -15,7 +15,7 @@ export type ProductData = {
 };
 
 const Product = (props: { product: ProductData }) => {
-  const { product_id, name, description, price, mainImage, images, quantity } =
+  const { name, description, price, mainImage, images, quantity } =
     props.product;
   const { increaseCartQuantity } = useShoppingCart();
 
@@ -35,7 +35,7 @@ const Product = (props: { product: ProductData }) => {
 
           <Button
             onClick={() => {
-              increaseCartQuantity(product_id);
+              increaseCartQuantity(props.product);
             }}
             type="submit"
             className="mt-2"

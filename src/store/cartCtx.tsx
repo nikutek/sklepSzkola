@@ -2,17 +2,27 @@ import { useContext, createContext, type ReactNode, useState } from "react";
 type ShoppingCartProviderProps = {
   children: ReactNode;
 };
-
+type Product = {
+  product_id: number;
+  name: string;
+  description: string;
+  price: number;
+  mainImage: string;
+  images: { product_id: number; source: string; image_id: number }[];
+  isDigital: boolean;
+  quantity: number;
+  categories: { id: number; name: string }[];
+};
 type CartItem = {
-  id: number;
+  product: Product;
   quantity: number;
 };
 
 type ShoppingCartContext = {
   cartItems: CartItem[];
   getItemQuantity: (id: number) => number;
-  increaseCartQuantity: (id: number) => void;
-  decreaseCartQuantity: (id: number) => void;
+  increaseCartQuantity: (product: Product) => void;
+  decreaseCartQuantity: (product: Product) => void;
   removeFromCart: (id: number) => void;
 };
 
@@ -28,16 +38,22 @@ export const ShoppingCartProvider = ({
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const getItemQuantity = (id: number) => {
-    return cartItems.find((item) => item.id === id)?.quantity ?? 0;
+    return (
+      cartItems.find((item) => item.product.product_id === id)?.quantity ?? 0
+    );
   };
 
-  const increaseCartQuantity = (id: number) => {
+  const increaseCartQuantity = (product: Product) => {
     setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id) == null) {
-        return [...currItems, { id, quantity: 1 }];
+      if (
+        currItems.find(
+          (item) => item.product.product_id === product.product_id,
+        ) == null
+      ) {
+        return [...currItems, { product, quantity: 1 }];
       } else {
         return currItems.map((item) => {
-          if (item.id === id) {
+          if (item.product.product_id === product.product_id) {
             return { ...item, quantity: item.quantity + 1 };
           } else {
             return item;
@@ -47,13 +63,18 @@ export const ShoppingCartProvider = ({
     });
     console.log(cartItems);
   };
-  const decreaseCartQuantity = (id: number) => {
+  const decreaseCartQuantity = (product: Product) => {
     setCartItems((currItems) => {
-      if (currItems.find((item) => item.id === id)?.quantity === 1) {
-        return currItems.filter((item) => item.id !== id);
+      if (
+        currItems.find((item) => item.product.product_id === product.product_id)
+          ?.quantity === 1
+      ) {
+        return currItems.filter(
+          (item) => item.product.product_id !== product.product_id,
+        );
       } else {
         return currItems.map((item) => {
-          if (item.id === id) {
+          if (item.product.product_id === product.product_id) {
             return { ...item, quantity: item.quantity - 1 };
           } else {
             return item;
@@ -65,7 +86,7 @@ export const ShoppingCartProvider = ({
 
   const removeFromCart = (id: number) => {
     setCartItems((currItems) => {
-      return currItems.filter((item) => item.id !== id);
+      return currItems.filter((item) => item.product.product_id !== id);
     });
   };
 
