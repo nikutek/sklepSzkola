@@ -22,7 +22,7 @@ type ShoppingCartContext = {
   cartItems: CartItem[];
   getItemQuantity: (id: number) => number;
   increaseCartQuantity: (product: Product) => void;
-  decreaseCartQuantity: (product: Product) => void;
+  decreaseCartQuantity: (id: number) => void;
   removeFromCart: (id: number) => void;
 };
 
@@ -63,18 +63,15 @@ export const ShoppingCartProvider = ({
     });
     console.log(cartItems);
   };
-  const decreaseCartQuantity = (product: Product) => {
+  const decreaseCartQuantity = (id: number) => {
     setCartItems((currItems) => {
       if (
-        currItems.find((item) => item.product.product_id === product.product_id)
-          ?.quantity === 1
+        currItems.find((item) => item.product.product_id === id)?.quantity === 1
       ) {
-        return currItems.filter(
-          (item) => item.product.product_id !== product.product_id,
-        );
+        return currItems.filter((item) => item.product.product_id !== id);
       } else {
         return currItems.map((item) => {
-          if (item.product.product_id === product.product_id) {
+          if (item.product.product_id === id) {
             return { ...item, quantity: item.quantity - 1 };
           } else {
             return item;
