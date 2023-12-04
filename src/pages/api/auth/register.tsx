@@ -86,12 +86,12 @@ export default async function handler(
       });
 
       const verificationToken = user.id;
-      const verificationUrl = `https://sklepszkola-production.up.railway.app/verify?email=${email}&token=${verificationToken}`;
+      const verificationUrl = `https://sklepszkola-production.up.railway.app/auth/verify?email=${email}&token=${verificationToken}`;
 
       const mailOptions = {
         from: "szklep@zsp1.siedlce.pl",
         to: email,
-        subject: "!!!Gorące mamuśki w twojej okolicy!!!",
+        subject: "Zweryfikuj swoje konto",
         text: verificationUrl,
       };
 
