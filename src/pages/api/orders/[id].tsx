@@ -2,6 +2,7 @@
 import { type NextApiResponse, type NextApiRequest } from "next";
 import { db } from "~/server/db";
 import { type productType } from "../products";
+import { string } from "zod";
 
 interface orderType {
   order_id: number;
@@ -104,7 +105,11 @@ export default async function handler(
   }
 
   if (req.method === "DELETE") {
-    const { order_id } = req.body as orderType;
+    if (typeof req.query.id != "string") {
+      res.status(200).json("Nieprawidłowe ID");
+      return;
+    }
+    const order_id = parseInt(req.query.id);
     const order = await db.order.delete({
       where: {
         order_id,

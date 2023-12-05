@@ -41,6 +41,14 @@ const Profile: NextPage<{ userDataProps: UserDataType }> = ({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [userData, setUserData] = useState<UserDataType>(userDataProps);
 
+  const cancelOrderHandler = async (orderID: number) => {
+    console.log(orderID);
+    const response = await fetch(`/api/orders/${orderID}`, {
+      method: "DELETE",
+    });
+    const orderDeletioninfo = response.json();
+    console.log(orderDeletioninfo);
+  };
   return (
     <div className=" flex h-full  min-h-screen flex-col">
       <section className="w-full bg-white">
@@ -87,9 +95,18 @@ const Profile: NextPage<{ userDataProps: UserDataType }> = ({
                 return (
                   <div
                     key={idx}
-                    className="flex flex-col gap-3 border-b-4 px-8 py-2"
+                    className="flex flex-col gap-3 border-b-4 border-black px-8 py-2"
                   >
                     <p>zamówienie nr: {order.order_id}</p>
+                    <button
+                      className=" text-md w-40 rounded-xl border-4 border-black bg-red-400 p-1 font-bold"
+                      onClick={async () => {
+                        await cancelOrderHandler(order.order_id);
+                      }}
+                    >
+                      Anuluj zamówienie
+                    </button>
+
                     <p>
                       Adres: {`${order.post} ${order.postal}, ${order.address}`}
                     </p>
