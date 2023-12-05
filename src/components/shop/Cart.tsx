@@ -52,15 +52,18 @@ function Cart() {
               </p>
             </div>
 
-            <div className=" flex flex-col justify-center gap-1">
+            <div className=" flex flex-col items-end justify-center  gap-1 text-center">
               <button
-                className="flex h-10 w-10 items-center justify-center rounded-md border-2 border-slate-500  text-3xl font-bold text-slate-700 transition hover:bg-red-300"
+                className="flex h-6 w-6 items-center justify-center rounded-md border-2 border-slate-500  text-xl font-bold text-slate-700 transition hover:bg-red-300"
                 onClick={() => {
                   removeFromCart(item.product.product_id);
                 }}
               >
                 x
               </button>
+              <p>
+                {Math.round(item.product.price * item.quantity * 100) / 100} zł
+              </p>
             </div>
           </div>
         );
