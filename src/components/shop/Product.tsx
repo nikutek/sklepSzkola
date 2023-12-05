@@ -11,7 +11,11 @@ export type ProductData = {
   images: { product_id: number; source: string; image_id: number }[];
   isDigital: boolean;
   quantity: number;
-  categories: { id: number; name: string }[];
+  categories: {
+    category_id: number;
+    id: number;
+    name: string;
+  }[];
 };
 
 const Product = (props: { product: ProductData }) => {

@@ -1,26 +1,11 @@
 import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
 import { Card } from "components/ui/card";
-import { categoryType } from "~/pages/api/categories";
-
-interface productType {
-  product_id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  description: string;
-  isDigital: boolean;
-  mainImage: string;
-  images: { product_id: number; source: string; image_id: number }[];
-  categoriesID: number[];
-  categories: {
-    category_id: number;
-    name: string;
-  }[];
-}
+import { type categoryType } from "~/pages/api/categories";
+import { ProductData } from "./Product";
 
 const Products = () => {
-  const [products, setProducts] = useState<productType[]>([]);
+  const [products, setProducts] = useState<ProductData[]>([]);
   const [categories, setCategories] = useState<categoryType[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   console.log(selectedCategory);
@@ -28,7 +13,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       const response = await fetch("/api/products");
-      const data = (await response.json()) as productType[];
+      const data = (await response.json()) as ProductData[];
       setProducts(data);
     } catch (err) {}
   };
@@ -82,10 +67,10 @@ const Products = () => {
       <div className="flex h-[90vh] w-[80%] flex-wrap justify-around">
         {products
           .filter((product) => {
+            console.log(product.categories);
             if (selectedCategory == undefined || selectedCategory == 0)
               return true;
             for (const i of product.categories) {
-              console.log(i.category_id);
               if (i.category_id == selectedCategory) {
                 return true;
               }
