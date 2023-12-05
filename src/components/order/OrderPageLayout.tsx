@@ -9,7 +9,6 @@ import { Controller, useForm } from "react-hook-form";
 import { RadioGroup, RadioGroupItem } from "components/ui/radio-group";
 import { useState } from "react";
 import Product from "../shop/Product";
-import { orderType } from "~/pages/api/orders";
 import { useRouter } from "next/router";
 import { useToast } from "components/ui/use-toast";
 
@@ -45,7 +44,6 @@ type Product = {
 const OrderPageLayout = (props: { user: UserType }) => {
   const { cartItems } = useShoppingCart();
   const { name, post, postal, address, email, id } = props.user;
-  console.log(props.user);
   const router = useRouter();
 
   const { toast } = useToast();
@@ -88,8 +86,20 @@ const OrderPageLayout = (props: { user: UserType }) => {
       },
       body: JSON.stringify(order),
     });
-    const convertedData = (await response.json()) as orderType;
-    console.log(convertedData);
+    if (!response.ok) {
+      toast({
+        title: "Błąd",
+        description: "Nie udało się wysłać zamówienia",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "Sukces",
+      description: "Pomyślnie wysłano zamówienie",
+    });
+
+    void router.replace("/");
   };
   console.log(cartItems);
   if (cartItems.length == 0) {

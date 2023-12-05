@@ -70,14 +70,11 @@ function Cart() {
         );
       })}
       <div className="mt-4 flex items-center justify-center">
-        <button
-          className=" w-3/4 rounded border-4 border-black p-2 text-center font-bold text-black shadow-xl transition hover:bg-black hover:text-white "
-          onClick={() => {
-            alert("Przyjmowanie zamównienia");
-          }}
-        >
-          Złóż zamówienie
-        </button>
+        <Link href={"/order"}>
+          <button className=" w-3/4 rounded border-4 border-black p-2 text-center font-bold text-black shadow-xl transition hover:bg-black hover:text-white ">
+            Złóż zamówienie
+          </button>
+        </Link>
       </div>
     </div>
   );
