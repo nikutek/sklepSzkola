@@ -140,7 +140,7 @@ export default function Login() {
         redirect: false,
       });
       if (response?.ok) {
-        await router.push("/profile");
+        await router.push("/");
       } else {
         console.log(response);
 

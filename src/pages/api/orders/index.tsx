@@ -28,12 +28,11 @@ export default async function handler(
     return;
   }
   if (req.method === "POST") {
-    const { user_id, shipped_date, address, postal, post, products } =
-      req.body as orderType;
+    const { user_id, address, postal, post, products } = req.body as orderType;
     const order = await db.order.create({
       data: {
         order_date: new Date(),
-        shipped_date,
+        shipped_date: null,
         address,
         postal,
         post,

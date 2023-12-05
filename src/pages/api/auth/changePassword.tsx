@@ -50,7 +50,7 @@ export default async function handler(
     const mailOptions = {
       from: "szklep@zsp1.siedlce.pl",
       to: email,
-      subject: "!!!Gorące mamuśki w twojej okolicy!!!",
+      subject: "Zmiana hasła do konta",
       text: passwordChangeUrl,
     };
     transporter.sendMail(mailOptions, function (error, info) {

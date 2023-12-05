@@ -1,7 +1,19 @@
 import { useEffect, useState } from "react";
 import ProductItem from "./ProductItem";
-import type { productType } from "~/pages/api/products";
 import { Card } from "components/ui/card";
+
+interface productType {
+  product_id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  description: string;
+  isDigital: boolean;
+  mainImage: string;
+  images: { product_id: number; source: string; image_id: number }[];
+  categoriesID: number[];
+  categories: { id: number; name: string }[];
+}
 
 const Products = () => {
   const [products, setProducts] = useState<productType[]>([]);
