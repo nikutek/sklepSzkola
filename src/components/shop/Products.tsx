@@ -11,7 +11,6 @@ const Products = () => {
       const response = await fetch("/api/products");
       const data = (await response.json()) as productType[];
       setProducts(data);
-      console.log(data);
     } catch (err) {}
   };
   useEffect(() => {
