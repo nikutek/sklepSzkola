@@ -23,14 +23,13 @@ export default async function handler(
     // konkretne zamówienie
     const order_id: number = parseInt(req.query.id as string);
     if (order_id) {
-      console.log("one");
       if (isNaN(order_id)) {
         res.status(200).json("nieprawidłowe ID");
         return;
       }
       const order = await db.order.findUnique({
         where: { order_id },
-        include: { products: true },
+        include: { products: true, user: true },
       });
       res.status(200).json(order);
       return;

@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { useShoppingCart } from "~/store/cartCtx";
+import { redirect } from "next/navigation";
 
 function Cart() {
   const {
@@ -9,6 +10,10 @@ function Cart() {
     removeFromCart,
     increaseCartQuantity,
   } = useShoppingCart();
+
+  const placeOrderHandler = () => {
+    redirect("/order");
+  };
 
   return (
     <div className="w-full">
@@ -63,9 +68,7 @@ function Cart() {
       <div className="mt-4 flex items-center justify-center">
         <button
           className=" w-3/4 rounded border-4 border-black p-2 text-center font-bold text-black shadow-xl transition hover:bg-black hover:text-white "
-          onClick={() => {
-            alert("Przyjmowanie zamównienia");
-          }}
+          onClick={placeOrderHandler}
         >
           Złóż zamówienie
         </button>
