@@ -144,7 +144,9 @@ const Profile: NextPage<{ userDataProps: UserDataType }> = ({
                 Twoje Ulubione produkty:
               </span>
             </h2>
-            {userData.favoriteProducts ? (
+
+            {/* ULUBIONE PRODUKTY DO ZROBIENIA KIEDYŚ */}
+            {/* {userData.favoriteProducts ? (
               <div className="flex w-full items-center justify-center">
                 {userData.favoriteProducts.map((favoriteItem) => {
                   const product = favoriteItem.product;
@@ -172,7 +174,7 @@ const Profile: NextPage<{ userDataProps: UserDataType }> = ({
               </div>
             ) : (
               <p>Dodaj produkty</p>
-            )}
+            )} */}
           </div>
         </div>
       </section>
