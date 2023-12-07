@@ -31,7 +31,6 @@ const ProductListItem = (props: {
         </div>
         <div className=" flex flex-col flex-wrap items-center justify-center text-base ">
           <p className=""> {`Price: ${price}zł`}</p>
-          <p> {`In magazine: ${quantity}`}</p>
         </div>
       </div>
       <div className=" my-2 flex w-full justify-around md:w-1/4">

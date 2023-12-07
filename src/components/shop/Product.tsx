@@ -35,7 +35,6 @@ const Product = (props: { product: ProductData }) => {
         <div className="w-1/3">
           <h2 className="mb-2 text-3xl font-bold">{name}</h2>
           <p className="mb-6 text-xl">{`Cena: ${price}zł`}</p>
-          <p>{`Na magazynie: ${quantity}`}</p>
 
           <Button
             onClick={() => {
