@@ -8,7 +8,7 @@ import type { ProductData } from "./Product";
 
 const ProductItem = (props: { product: ProductData }) => {
   const { name, price, mainImage, product_id } = props.product;
-  const { increaseCartQuantity, cartItems } = useShoppingCart();
+  const { increaseCartQuantity } = useShoppingCart();
   return (
     <Card className="relative m-2 flex h-[40%]  w-1/6 flex-col items-center  p-2 ">
       <div className="flex h-[90%] w-[80%] flex-col items-center justify-around">
@@ -28,7 +28,7 @@ const ProductItem = (props: { product: ProductData }) => {
               query: { id: product_id },
             }}
           >
-            <Label className="cursor-pointer p-2 text-lg hover:underline">{`${name}`}</Label>
+            <Label className="cursor-pointer p-2 text-center text-lg hover:underline">{`${name}`}</Label>
           </Link>
 
           <Label>{`${price} zł`}</Label>
