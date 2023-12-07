@@ -65,24 +65,30 @@ export default async function handler(
       product_id: number;
     }
 
-    const response = await fetch("http://localhost:3000/api/images", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ base64Image: mainImage }),
-    });
-    const data = (await response.json()) as imageKitType;
-    const mainImageUrl = data.source;
-    const images: imageKitType[] = [];
-    for (const img of imagesBase64) {
-      const response = await fetch("http://localhost:3000/api/images", {
+    const response = await fetch(
+      "https://sklepszkola-production.up.railway.app/api/images",
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ base64Image: img }),
-      });
+        body: JSON.stringify({ base64Image: mainImage }),
+      },
+    );
+    const data = (await response.json()) as imageKitType;
+    const mainImageUrl = data.source;
+    const images: imageKitType[] = [];
+    for (const img of imagesBase64) {
+      const response = await fetch(
+        "https://sklepszkola-production.up.railway.app/api/images",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ base64Image: img }),
+        },
+      );
       const data = (await response.json()) as imageKitType;
       images.push(data);
     }

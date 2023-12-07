@@ -97,7 +97,6 @@ const OrdersList = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(order_id),
     });
     if (!response.ok) {
       toast({
