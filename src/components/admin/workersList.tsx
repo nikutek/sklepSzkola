@@ -14,7 +14,7 @@ const WorkersListItem = (props: {
   post: string;
   postal: string;
   id: string;
-  onClick: (worker_id: string) => void;
+  deleteWorkerHandler: (worker_id: string) => void;
 }) => {
   const { name, email, address, post, postal, password, id } = props;
   console.log(id);
@@ -47,7 +47,12 @@ const WorkersListItem = (props: {
             Edytuj
           </Link>
         </Button>
-        <Button className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg">
+        <Button
+          className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg"
+          onClick={() => {
+            props.deleteWorkerHandler(id);
+          }}
+        >
           Usuń
         </Button>
       </div>
@@ -79,12 +84,12 @@ const WorkersList = () => {
   }, []);
 
   const deleteWorkerHandler = async (worker_id: string) => {
-    console.log("es");
-    const response = await fetch(`/api/workers/${worker_id}`, {
+    const response = await fetch(`/api/user`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({ id: worker_id }),
     });
     if (!response.ok) {
       toast({
@@ -125,7 +130,7 @@ const WorkersList = () => {
                 address={worker.address}
                 post={worker.post}
                 postal={worker.postal}
-                onClick={deleteWorkerHandler.bind(null, worker.id)}
+                deleteWorkerHandler={deleteWorkerHandler.bind(null, worker.id)}
               />
             ))}
           </ul>
