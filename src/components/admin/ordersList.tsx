@@ -92,12 +92,11 @@ const OrdersList = () => {
   }, []);
 
   const deleteOrderHandler = async (order_id: number) => {
-    const response = await fetch("/api/orders", {
+    const response = await fetch(`/api/orders/${order_id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(order_id),
     });
     if (!response.ok) {
       toast({
