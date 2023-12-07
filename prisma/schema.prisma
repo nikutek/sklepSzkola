@@ -96,7 +96,7 @@ model Product {
   name        String
   price       Float
   quantity    Float
-  description String
+  description String  @db.LongText
   isDigital   Boolean
   mainImage   String?
   images      Image[]
