@@ -19,9 +19,16 @@ export default ProductPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const id = query.id as string;
-  const response = await fetch(`/api/products/${id}`);
+  const response = await fetch(
+    `https://sklepszkola-production.up.railway.app/api/products/${id}`,
+  );
   if (!response.ok) {
-    return { props: {} };
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/",
+      },
+    };
   }
   const product = (await response.json()) as ProductData;
 
