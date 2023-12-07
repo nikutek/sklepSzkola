@@ -82,13 +82,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const orderID = context.params.orderId as string;
 
   const ordersEndpointResponse = await fetch(
-    `http://localhost:3000/api/orders/${orderID}`,
+    `https://sklepszkola-production.up.railway.app/api/orders/${orderID}`,
     {
       method: "GET",
     },
   );
 
   const orderData = (await ordersEndpointResponse.json()) as UserDataType;
+
+  if (!orderData) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: "/admin/orders",
+      },
+    };
+  }
 
   return {
     props: {

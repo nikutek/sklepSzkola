@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Button } from "components/ui/button";
 import { useToast } from "components/ui/use-toast";
 import { type orderType } from "~/pages/api/orders";
+import Link from "next/link";
 
 export type userType = {
   address: string;
@@ -42,7 +43,10 @@ const OrdersListItem = (props: {
   console.log(order);
   return (
     <li className="border-grey my-3 flex w-full flex-wrap  items-center justify-between border-b-2 py-2 text-sm md:flex-nowrap md:p-2 md:text-lg">
-      <div className="flex w-full  items-center justify-around md:w-[80%] ">
+      <Link
+        href={`/admin/orders/${order.order_id}`}
+        className="flex w-full  items-center justify-around md:w-[80%] "
+      >
         <div className="flex items-center">
           <p className="text-md">{`Ilość produktów: ${order.products.length}`}</p>
         </div>
@@ -54,7 +58,8 @@ const OrdersListItem = (props: {
             order.order_date,
           )}`}</p>
         </div>
-      </div>
+      </Link>
+
       <div className=" my-2 flex w-full justify-around md:w-1/4">
         <Button
           onClick={props.onDelete.bind(null, order.order_id)}

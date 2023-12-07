@@ -139,11 +139,11 @@ const Profile: NextPage<{ userDataProps: UserDataType }> = ({
           )}
 
           <div>
-            <h2 className="m- text-2xl tracking-wide">
+            {/* <h2 className="m- text-2xl tracking-wide">
               <span className="border-b-2 border-black pr-4">
                 Twoje Ulubione produkty:
               </span>
-            </h2>
+            </h2> */}
 
             {/* ULUBIONE PRODUKTY DO ZROBIENIA KIEDYŚ */}
             {/* {userData.favoriteProducts ? (
