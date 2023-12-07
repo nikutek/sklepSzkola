@@ -198,7 +198,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   const userEndpointResponse = await fetch(
-    `http://localhost:3000/api/user/${session.user.email}`,
+    `https://sklepszkola-production.up.railway.app/${session.user.email}`,
     {
       method: "GET",
     },
