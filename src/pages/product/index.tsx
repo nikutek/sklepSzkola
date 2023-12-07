@@ -19,7 +19,7 @@ export default ProductPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const id = query.id as string;
-  const response = await fetch(`http://localhost:3000/api/products/${id}`);
+  const response = await fetch(`/api/products/${id}`);
   if (!response.ok) {
     return { props: {} };
   }
