@@ -35,9 +35,9 @@ const ProductListItem = (props: {
         </div>
       </div>
       <div className=" my-2 flex w-full justify-around md:w-1/4">
-        <Button className=" bg-blue-400 p-4 text-sm hover:bg-blue-500 md:text-lg">
+        {/* <Button className=" bg-blue-400 p-4 text-sm hover:bg-blue-500 md:text-lg">
           Edytuj
-        </Button>
+        </Button> */}
         <Button
           onClick={props.onDelete.bind(null, product_id)}
           className=" bg-red-700 p-4 text-sm hover:bg-red-800 md:text-lg"

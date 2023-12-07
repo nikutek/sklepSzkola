@@ -164,13 +164,26 @@ export default async function handler(
 
   if (req.method === "DELETE") {
     const { product_id } = req.body as productType;
-    const user = await db.product.delete({
+
+    await db.image.deleteMany({
       where: {
         product_id,
       },
     });
 
-    res.status(200).json(user);
+    await db.favoriteProducts.deleteMany({
+      where: {
+        product_id,
+      },
+    });
+
+    const product = await db.product.delete({
+      where: {
+        product_id,
+      },
+    });
+
+    res.status(200).json(product);
     return;
   }
 }
